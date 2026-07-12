@@ -5,7 +5,7 @@ export const CATEGORIES: Category[] = [
   { slug: "men", name: "رجالي", nameEn: "Men", icon: "👔" },
   { slug: "kids", name: "أطفال", nameEn: "Kids", icon: "🧸" },
   { slug: "beauty", name: "تجميل", nameEn: "Beauty", icon: "💄" },
-  { slug: "home", name: "منزل", nameEn: "Home", icon: "🏠" },
+  { slug: "home", name: "المنزل", nameEn: "Home", icon: "🏠" },
   { slug: "accessories", name: "إكسسوارات", nameEn: "Accessories", icon: "⌚" },
 ];
 
@@ -20,23 +20,86 @@ export const TRENDING_CATEGORIES = [
   { slug: "women", name: "إكسسوارات", icon: "💍", count: 160 },
 ];
 
-const img = (seed: string) => `https://picsum.photos/seed/${seed}/600/750`;
-const gallery = (seed: string) => [
-  `https://picsum.photos/seed/${seed}-1/600/750`,
-  `https://picsum.photos/seed/${seed}-2/600/750`,
-  `https://picsum.photos/seed/${seed}-3/600/750`,
-  `https://picsum.photos/seed/${seed}-4/600/750`,
-  `https://picsum.photos/seed/${seed}-5/600/750`,
-];
+// Real Unsplash fashion product photos.
+// Format: https://images.unsplash.com/photo-{ID}?w=600&h=750&fit=crop&q=80
+const u = (id: string) => `https://images.unsplash.com/${id}?w=600&h=750&fit=crop&q=80&auto=format`;
 
-const mk = (p: Partial<Product> & { id: string; title: string; category: any; price: number }): Product => {
+// Helper to build a 5-image gallery from a primary image + 4 related ones
+const gallery = (primary: string, related: string[]) => {
+  const g = [primary, ...related];
+  while (g.length < 5) g.push(related[g.length % related.length] ?? primary);
+  return g.slice(0, 5);
+};
+
+// Curated Unsplash photo IDs per category (real fashion photos)
+const PHOTOS = {
+  // Women's dresses / clothing
+  womenDress1: "photo-1572804013309-59a88b7e92f1",
+  womenDress2: "photo-1595777457583-95e059d581b8",
+  womenDress3: "photo-1539109136881-3be0616acf4b",
+  womenDress4: "photo-1490481651871-ab68de25d43d",
+  womenTop1: "photo-1581044777550-4cfa60707c03",
+  womenTop2: "photo-1485518882345-15568b007407",
+  womenPants1: "photo-1594633312681-425c7b97ccd1",
+  womenPants2: "photo-1551803091-e20673f15770",
+  womenSkirt1: "photo-1583496661160-fb5886a13d77",
+  womenCoat1: "photo-1515886657613-9f3515b0c78f",
+  womenCoat2: "photo-1483985988355-763728e1935b",
+
+  // Women shoes & bags
+  womenHeels: "photo-1543163521-1bf539c55dd2",
+  womenHeels2: "photo-1518049362265-d5b2a6b00b37",
+  womenBag1: "photo-1584917865442-de89df76afd3",
+  womenBag2: "photo-1548036328-c9fa89d128fa",
+  womenBag3: "photo-1591561954557-26941169b49e",
+
+  // Men
+  menShirt1: "photo-1620799140408-edc6dcb6d633",
+  menShirt2: "photo-1602810318383-e386cc2a3ccf",
+  menPolo: "photo-1620012253295-c15cc3e65df4",
+  menJeans: "photo-1542272604-787c3835535d",
+  menTshirt: "photo-1521572163474-6864f9cf17ab",
+  menJacket1: "photo-1596755094514-f87e34085b2c",
+  menJacket2: "photo-1516257984-b1b4d707412e",
+  menShoes1: "photo-1549298916-b41d501d3772",
+  menShoes2: "photo-1606107557195-0e29a4b5b4aa",
+
+  // Kids
+  kidsDress: "photo-1622290291468-a28f7a7dc4a8",
+  kidsBoy: "photo-1519278409-1f56fdda7fe5",
+  kidsToy: "photo-1503944583220-79d8926ad5e2",
+  kidsShoes: "photo-1514989940723-e8e51635b782",
+
+  // Beauty
+  beautyLipstick: "photo-1522335789203-aabd1fc54bc9",
+  beautyCream: "photo-1556228720-195a672e8a03",
+  beautyPerfume: "photo-1541643600914-78b084683601",
+  beautyPalette: "photo-1596462502278-27bfdc403348",
+  beautySet: "photo-1571781926291-c477ebfd024b",
+
+  // Accessories
+  accWatch1: "photo-1611652022419-a9419f74343d",
+  accWatch2: "photo-1524805444758-089113d48a6d",
+  accGlasses1: "photo-1572635196237-14b3f281503f",
+  accGlasses2: "photo-1577803645773-f96470509666",
+  accNecklace1: "photo-1599643477877-530eb83abc8e",
+  accNecklace2: "photo-1611591437281-460bfbe1220a",
+  accEarrings: "photo-1535632066927-ab7c9ab60908",
+
+  // Home
+  homeVase: "photo-1513519245088-0e12902e5a38",
+  homeCups: "photo-1493663284031-b7e3aefcae8e",
+  homeCandle: "photo-1582058091505-f87a2e55a40f",
+  homeDecor: "photo-1513519245088-0e12902e5a38",
+} as const;
+
+const mk = (p: Partial<Product> & { id: string; title: string; category: any; price: number; image: string; images?: string[] }): Product => {
   const price = p.price;
   const oldPrice = p.oldPrice ?? Math.round(price * (1 + (p.discount ?? 30) / 100));
   const discount = p.discount ?? Math.round(((oldPrice - price) / oldPrice) * 100);
+  const images = p.images ?? gallery(p.image, [p.image]);
   return {
     subcategory: "",
-    image: img(p.id),
-    images: gallery(p.id),
     sizes: ["S", "M", "L", "XL"],
     colors: [
       { name: "أسود", hex: "#000000" },
@@ -44,7 +107,7 @@ const mk = (p: Partial<Product> & { id: string; title: string; category: any; pr
       { name: "وردي", hex: "#ee296d" },
     ],
     description:
-      "منتج عصري ذو جودة عالية ومصنوع من أجود الخامات. تصميم أنيق يناسب جميع المناسبات ويمنحك إطلالة مميزة. ماركة KMH Fashion.",
+      "قطعة عصرية بجودة عالية مصنوعة من أجود الخامات. تصميم أنيق يناسب جميع المناسبات ويمنحك إطلالة مميزة. متوفر بألوان ومقاسات متعددة.",
     rating: 4.5,
     reviewsCount: 120,
     reviews: [
@@ -60,7 +123,7 @@ const mk = (p: Partial<Product> & { id: string; title: string; category: any; pr
         user: "نورة س.",
         rating: 4,
         date: "2025-04-28",
-        comment: "السلمة كما هي موصوفة والمقاس مظبوط. أنصح به.",
+        comment: "السلعة كما هي موصوفة والمقاس مظبوط. أنصح به.",
       },
       {
         id: "r3",
@@ -71,13 +134,21 @@ const mk = (p: Partial<Product> & { id: string; title: string; category: any; pr
       },
     ],
     stock: 50,
-    brand: "KMH Fashion",
+    brand: "SHEIN",
     tags: [],
     oldPrice,
     discount,
     ...p,
+    images,
   } as Product;
 };
+
+const womenImgs = [PHOTOS.womenDress1, PHOTOS.womenDress2, PHOTOS.womenDress3, PHOTOS.womenDress4, PHOTOS.womenTop1];
+const menImgs = [PHOTOS.menShirt1, PHOTOS.menShirt2, PHOTOS.menPolo, PHOTOS.menJeans, PHOTOS.menTshirt, PHOTOS.menJacket1];
+const kidsImgs = [PHOTOS.kidsDress, PHOTOS.kidsBoy, PHOTOS.kidsToy, PHOTOS.kidsShoes];
+const beautyImgs = [PHOTOS.beautyLipstick, PHOTOS.beautyCream, PHOTOS.beautyPerfume, PHOTOS.beautyPalette, PHOTOS.beautySet];
+const accImgs = [PHOTOS.accWatch1, PHOTOS.accWatch2, PHOTOS.accGlasses1, PHOTOS.accGlasses2, PHOTOS.accNecklace1, PHOTOS.accNecklace2, PHOTOS.accEarrings];
+const homeImgs = [PHOTOS.homeVase, PHOTOS.homeCups, PHOTOS.homeCandle, PHOTOS.homeDecor];
 
 export const PRODUCTS: Product[] = [
   // ===== WOMEN =====
@@ -100,6 +171,8 @@ export const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 234,
     tags: ["سهرة", "مطرز", "أنيق"],
+    image: u(PHOTOS.womenDress1),
+    images: gallery(u(PHOTOS.womenDress1), womenImgs.map(u)),
   }),
   mk({
     id: "w-dress-02",
@@ -116,6 +189,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.6,
     reviewsCount: 89,
+    image: u(PHOTOS.womenDress2),
+    images: gallery(u(PHOTOS.womenDress2), womenImgs.map(u)),
   }),
   mk({
     id: "w-top-01",
@@ -133,6 +208,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.4,
     reviewsCount: 156,
+    image: u(PHOTOS.womenTop1),
+    images: gallery(u(PHOTOS.womenTop1), [u(PHOTOS.womenTop2), ...womenImgs.map(u)]),
   }),
   mk({
     id: "w-pants-01",
@@ -151,6 +228,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.7,
     reviewsCount: 201,
+    image: u(PHOTOS.womenPants1),
+    images: gallery(u(PHOTOS.womenPants1), [u(PHOTOS.womenPants2), ...womenImgs.map(u)]),
   }),
   mk({
     id: "w-shoes-01",
@@ -169,6 +248,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.5,
     reviewsCount: 178,
+    image: u(PHOTOS.womenHeels),
+    images: gallery(u(PHOTOS.womenHeels), [u(PHOTOS.womenHeels2), ...womenImgs.map(u)]),
   }),
   mk({
     id: "w-bag-01",
@@ -187,6 +268,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.9,
     reviewsCount: 312,
+    image: u(PHOTOS.womenBag1),
+    images: gallery(u(PHOTOS.womenBag1), [u(PHOTOS.womenBag2), u(PHOTOS.womenBag3), ...womenImgs.map(u)]),
   }),
   mk({
     id: "w-dress-03",
@@ -202,6 +285,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.3,
     reviewsCount: 67,
+    image: u(PHOTOS.womenDress3),
+    images: gallery(u(PHOTOS.womenDress3), [u(PHOTOS.womenDress4), ...womenImgs.map(u)]),
   }),
   mk({
     id: "w-skirt-01",
@@ -218,6 +303,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.6,
     reviewsCount: 94,
+    image: u(PHOTOS.womenSkirt1),
+    images: gallery(u(PHOTOS.womenSkirt1), [u(PHOTOS.womenCoat1), ...womenImgs.map(u)]),
   }),
 
   // ===== MEN =====
@@ -238,6 +325,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.7,
     reviewsCount: 245,
+    image: u(PHOTOS.menShirt1),
+    images: gallery(u(PHOTOS.menShirt1), menImgs.map(u)),
   }),
   mk({
     id: "m-shirt-02",
@@ -256,6 +345,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.5,
     reviewsCount: 132,
+    image: u(PHOTOS.menPolo),
+    images: gallery(u(PHOTOS.menPolo), [u(PHOTOS.menShirt2), ...menImgs.map(u)]),
   }),
   mk({
     id: "m-pants-01",
@@ -273,6 +364,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.6,
     reviewsCount: 198,
+    image: u(PHOTOS.menJeans),
+    images: gallery(u(PHOTOS.menJeans), menImgs.map(u)),
   }),
   mk({
     id: "m-shoes-01",
@@ -292,6 +385,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.8,
     reviewsCount: 287,
+    image: u(PHOTOS.menShoes1),
+    images: gallery(u(PHOTOS.menShoes1), [u(PHOTOS.menShoes2), ...menImgs.map(u)]),
   }),
   mk({
     id: "m-jacket-01",
@@ -309,6 +404,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.7,
     reviewsCount: 154,
+    image: u(PHOTOS.menJacket1),
+    images: gallery(u(PHOTOS.menJacket1), [u(PHOTOS.menJacket2), ...menImgs.map(u)]),
   }),
   mk({
     id: "m-tshirt-01",
@@ -327,6 +424,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.4,
     reviewsCount: 78,
+    image: u(PHOTOS.menTshirt),
+    images: gallery(u(PHOTOS.menTshirt), menImgs.map(u)),
   }),
 
   // ===== KIDS =====
@@ -346,6 +445,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.7,
     reviewsCount: 112,
+    image: u(PHOTOS.kidsDress),
+    images: gallery(u(PHOTOS.kidsDress), kidsImgs.map(u)),
   }),
   mk({
     id: "k-set-01",
@@ -363,6 +464,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.6,
     reviewsCount: 89,
+    image: u(PHOTOS.kidsBoy),
+    images: gallery(u(PHOTOS.kidsBoy), kidsImgs.map(u)),
   }),
   mk({
     id: "k-toy-01",
@@ -379,6 +482,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.8,
     reviewsCount: 156,
+    image: u(PHOTOS.kidsToy),
+    images: gallery(u(PHOTOS.kidsToy), kidsImgs.map(u)),
   }),
 
   // ===== BEAUTY =====
@@ -400,6 +505,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.6,
     reviewsCount: 423,
+    image: u(PHOTOS.beautyLipstick),
+    images: gallery(u(PHOTOS.beautyLipstick), beautyImgs.map(u)),
   }),
   mk({
     id: "b-cream-01",
@@ -414,6 +521,8 @@ export const PRODUCTS: Product[] = [
     colors: [{ name: "متعدد", hex: "#f1c40f" }],
     rating: 4.7,
     reviewsCount: 234,
+    image: u(PHOTOS.beautyCream),
+    images: gallery(u(PHOTOS.beautyCream), beautyImgs.map(u)),
   }),
   mk({
     id: "b-perfume-01",
@@ -428,6 +537,8 @@ export const PRODUCTS: Product[] = [
     colors: [{ name: "متعدد", hex: "#ee296d" }],
     rating: 4.9,
     reviewsCount: 312,
+    image: u(PHOTOS.beautyPerfume),
+    images: gallery(u(PHOTOS.beautyPerfume), beautyImgs.map(u)),
   }),
   mk({
     id: "b-palette-01",
@@ -442,6 +553,8 @@ export const PRODUCTS: Product[] = [
     colors: [{ name: "متعدد", hex: "#8e44ad" }],
     rating: 4.5,
     reviewsCount: 178,
+    image: u(PHOTOS.beautyPalette),
+    images: gallery(u(PHOTOS.beautyPalette), beautyImgs.map(u)),
   }),
 
   // ===== ACCESSORIES =====
@@ -462,6 +575,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.7,
     reviewsCount: 198,
+    image: u(PHOTOS.accWatch1),
+    images: gallery(u(PHOTOS.accWatch1), [u(PHOTOS.accWatch2), ...accImgs.map(u)]),
   }),
   mk({
     id: "a-glasses-01",
@@ -479,6 +594,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.5,
     reviewsCount: 134,
+    image: u(PHOTOS.accGlasses1),
+    images: gallery(u(PHOTOS.accGlasses1), [u(PHOTOS.accGlasses2), ...accImgs.map(u)]),
   }),
   mk({
     id: "a-necklace-01",
@@ -496,6 +613,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.8,
     reviewsCount: 245,
+    image: u(PHOTOS.accNecklace1),
+    images: gallery(u(PHOTOS.accNecklace1), [u(PHOTOS.accNecklace2), u(PHOTOS.accEarrings), ...accImgs.map(u)]),
   }),
 
   // ===== HOME =====
@@ -516,6 +635,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.6,
     reviewsCount: 87,
+    image: u(PHOTOS.homeVase),
+    images: gallery(u(PHOTOS.homeVase), homeImgs.map(u)),
   }),
   mk({
     id: "h-kitchen-01",
@@ -533,6 +654,8 @@ export const PRODUCTS: Product[] = [
     ],
     rating: 4.7,
     reviewsCount: 142,
+    image: u(PHOTOS.homeCups),
+    images: gallery(u(PHOTOS.homeCups), homeImgs.map(u)),
   }),
   mk({
     id: "h-candle-01",
@@ -547,6 +670,8 @@ export const PRODUCTS: Product[] = [
     colors: [{ name: "ذهبي", hex: "#d4af37" }],
     rating: 4.5,
     reviewsCount: 76,
+    image: u(PHOTOS.homeCandle),
+    images: gallery(u(PHOTOS.homeCandle), homeImgs.map(u)),
   }),
 ];
 

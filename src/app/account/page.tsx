@@ -38,8 +38,8 @@ export default function AccountPage() {
             <User className="h-8 w-8" />
           </div>
           <div className="flex-1">
-            <div className="text-lg font-black">ضيف KMH</div>
-            <div className="text-xs opacity-90">مرحباً بك في متجر KMH Fashion</div>
+            <div className="text-lg font-black">ضيف SHEIN</div>
+            <div className="text-xs opacity-90">مرحباً بك في متجر SHEIN</div>
           </div>
           <Link
             href="#"
@@ -106,7 +106,7 @@ export default function AccountPage() {
       </button>
 
       <p className="mt-6 text-center text-[10px] text-shein-muted">
-        متجر KMH Fashion — ملك: خالد الحربي © {new Date().getFullYear()}
+        متجر SHEIN — ملك: خالد الحربي © {new Date().getFullYear()}
       </p>
     </div>
   );

@@ -25,7 +25,8 @@ const slides: Slide[] = [
     cta: "تسوّق الآن",
     href: "/category/all",
     bg: "linear-gradient(135deg, #ee296d 0%, #ff5a8a 100%)",
-    image: "https://picsum.photos/seed/banner-fashion-1/900/450",
+    image:
+      "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200&h=600&fit=crop&q=80&auto=format",
     textColor: "text-white",
   },
   {
@@ -35,7 +36,8 @@ const slides: Slide[] = [
     cta: "اكتشف المجموعة",
     href: "/category/women",
     bg: "linear-gradient(135deg, #0a0a0a 0%, #2d2d2d 100%)",
-    image: "https://picsum.photos/seed/banner-fashion-2/900/450",
+    image:
+      "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200&h=600&fit=crop&q=80&auto=format",
     textColor: "text-white",
   },
   {
@@ -44,8 +46,9 @@ const slides: Slide[] = [
     subtitle: "أحدث صيحات الموضة الرجالية",
     cta: "تسوّق رجالي",
     href: "/category/men",
-    bg: "linear-gradient(135deg, #1e3a8a 0%, #3b5bdb 100%)",
-    image: "https://picsum.photos/seed/banner-fashion-3/900/450",
+    bg: "linear-gradient(135deg, #1a1a1a 0%, #3d3d3d 100%)",
+    image:
+      "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=1200&h=600&fit=crop&q=80&auto=format",
     textColor: "text-white",
   },
   {
@@ -55,7 +58,8 @@ const slides: Slide[] = [
     cta: "اكتشف الجمال",
     href: "/category/beauty",
     bg: "linear-gradient(135deg, #d4af37 0%, #f1c40f 100%)",
-    image: "https://picsum.photos/seed/banner-fashion-4/900/450",
+    image:
+      "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1200&h=600&fit=crop&q=80&auto=format",
     textColor: "text-white",
   },
 ];
@@ -92,7 +96,7 @@ export function HeroCarousel() {
                 fill
                 priority={s.id === 1}
                 sizes="100vw"
-                className="object-cover opacity-50"
+                className="object-cover opacity-40"
               />
               <div className="absolute inset-0 flex flex-col justify-center gap-2 p-5 sm:gap-4 sm:p-12">
                 <div

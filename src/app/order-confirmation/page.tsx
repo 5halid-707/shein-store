@@ -10,7 +10,7 @@ export default function OrderConfirmationPage() {
 
   useEffect(() => {
     try {
-      const raw = sessionStorage.getItem("kmh-last-order");
+      const raw = sessionStorage.getItem("shein-last-order");
       if (raw) setOrder(JSON.parse(raw));
     } catch {}
   }, []);
@@ -23,8 +23,8 @@ export default function OrderConfirmationPage() {
         </div>
         <h1 className="text-2xl font-black sm:text-3xl">تم استلام طلبك! 🎉</h1>
         <p className="mt-2 text-sm text-shein-muted">
-          شكراً لتسوقك من متجر KMH Fashion. سنرسل لك بريداً إلكترونياً بتفاصيل
-          الطلب وملخص الشحنة.
+          شكراً لتسوقك من متجر SHEIN. سنرسل لك بريداً إلكترونياً بتفاصيل الطلب
+          وملخص الشحنة.
         </p>
 
         {order && (

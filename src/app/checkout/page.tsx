@@ -87,10 +87,10 @@ export default function CheckoutPage() {
     setSubmitting(true);
     // simulate order
     setTimeout(() => {
-      const orderId = "KMH" + Date.now().toString().slice(-8);
+      const orderId = "SHN" + Date.now().toString().slice(-8);
       try {
         sessionStorage.setItem(
-          "kmh-last-order",
+          "shein-last-order",
           JSON.stringify({
             id: orderId,
             total,

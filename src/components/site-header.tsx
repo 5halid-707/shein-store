@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Heart, Menu, Search, ShoppingCart, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -47,24 +48,23 @@ export function SiteHeader() {
           {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
 
-        <Link href="/" className="flex shrink-0 items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-shein-pink text-white font-black">
-            K
-          </span>
-          <div className="hidden sm:block">
-            <div className="text-lg font-black leading-none tracking-tight">
-              KMH <span className="text-shein-pink">Fashion</span>
-            </div>
-            <div className="text-[10px] text-shein-muted">متجر الأزياء العصرية</div>
-          </div>
+        <Link href="/" className="flex shrink-0 items-center" aria-label="SHEIN">
+          <Image
+            src="/shein-logo.svg"
+            alt="SHEIN"
+            width={110}
+            height={32}
+            priority
+            className="h-7 w-auto md:h-9"
+          />
         </Link>
 
         <form
           onSubmit={submitSearch}
           className="mx-auto hidden flex-1 max-w-2xl items-center md:flex"
         >
-          <div className="flex w-full items-center rounded-full border border-shein-border bg-shein-gray/60 px-4 focus-within:border-shein-pink focus-within:bg-white">
-            <Search className="h-4 w-4 text-shein-muted" />
+          <div className="flex w-full items-center rounded-full border-2 border-shein-pink bg-white px-2 focus-within:border-shein-pink-dark">
+            <Search className="ms-2 h-4 w-4 text-shein-pink" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -73,7 +73,7 @@ export function SiteHeader() {
             />
             <button
               type="submit"
-              className="rounded-full bg-shein-pink px-4 py-1.5 text-xs font-bold text-white"
+              className="rounded-full bg-shein-pink px-5 py-1.5 text-xs font-bold text-white transition hover:bg-shein-pink-dark"
             >
               بحث
             </button>
@@ -125,14 +125,20 @@ export function SiteHeader() {
       {/* Mobile search */}
       <div className="container-app pb-2 md:hidden">
         <form onSubmit={submitSearch} className="flex items-center">
-          <div className="flex w-full items-center rounded-full border border-shein-border bg-shein-gray/60 px-3 focus-within:border-shein-pink">
-            <Search className="h-4 w-4 text-shein-muted" />
+          <div className="flex w-full items-center rounded-full border-2 border-shein-pink bg-white px-2 focus-within:border-shein-pink-dark">
+            <Search className="ms-1 h-4 w-4 text-shein-pink" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="ابحث عن منتج..."
               className="w-full bg-transparent px-2 py-2 text-sm outline-none placeholder:text-shein-muted"
             />
+            <button
+              type="submit"
+              className="rounded-full bg-shein-pink px-4 py-1.5 text-xs font-bold text-white"
+            >
+              بحث
+            </button>
           </div>
         </form>
       </div>
@@ -168,9 +174,13 @@ export function SiteHeader() {
           />
           <div className="absolute right-0 top-0 h-full w-72 max-w-[85%] bg-white p-4 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
-              <div className="text-lg font-black">
-                KMH <span className="text-shein-pink">Fashion</span>
-              </div>
+              <Image
+                src="/shein-logo.svg"
+                alt="SHEIN"
+                width={100}
+                height={28}
+                className="h-7 w-auto"
+              />
               <button
                 onClick={() => setMobileOpen(false)}
                 className="grid h-9 w-9 place-items-center rounded-full hover:bg-shein-gray"

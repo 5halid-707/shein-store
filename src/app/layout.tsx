@@ -18,21 +18,23 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  title: "متجر KMH Fashion | أزياء عصرية للجنسين والأطفال",
+  title: "SHEIN | أزياء عصرية للجنسين والأطفال بأفضل الأسعار",
   description:
-    "متجر KMH للأزياء العصرية - ملابس رجالية ونسائية وأطفال، إكسسوارات، تجميل، ومنزل. شحن سريع لجميع أنحاء المملكة العربية السعودية. ملك: خالد الحربي.",
+    "SHEIN - متجر الأزياء العصرية الأول في السعودية. ملابس رجالية ونسائية وأطفال، إكسسوارات، تجميل، ومنزل. شحن سريع، إرجاع مجاني خلال 35 يوم، وأكثر من 70% خصم.",
   keywords: [
-    "متجر KMH",
+    "SHEIN",
+    "شين",
     "أزياء",
     "ملابس نسائية",
     "ملابس رجالية",
     "أطفال",
     "إكسسوارات",
+    "تجميل",
     "السعودية",
     "تسوق اونلاين",
   ],
   openGraph: {
-    title: "متجر KMH Fashion | أزياء عصرية",
+    title: "SHEIN | أزياء عصرية للجنسين والأطفال",
     description: "أزياء عصرية بأسعار منافسة وشحن سريع للسعودية",
     type: "website",
     locale: "ar_SA",
@@ -43,7 +45,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#ee296d",
+  themeColor: "#000000",
 };
 
 export default function RootLayout({
@@ -51,7 +53,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ar" dir="rtl" className={cairo.variable}>
-      <body className="min-h-screen bg-white font-sans text-shein-text antialiased">
+      <body className="min-h-screen bg-shein-bg font-sans text-shein-text antialiased">
         <ToastProvider>
           <WishlistProvider>
             <CartProvider>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, Eye, ShoppingCart, Star } from "lucide-react";
+import { Heart, ShoppingCart, Star } from "lucide-react";
 import type { Product } from "@/types";
 import { useCart } from "@/context/cart-context";
 import { useWishlist } from "@/context/wishlist-context";
@@ -46,7 +46,7 @@ export function ProductCard({
       href={`/product/${product.id}`}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      className="group relative block overflow-hidden rounded-2xl border border-shein-border bg-white transition-all hover:shadow-lg"
+      className="group relative block overflow-hidden rounded-lg bg-white transition-shadow hover:shadow-lg"
     >
       {/* Image */}
       <div className="relative aspect-[4/5] overflow-hidden bg-shein-gray">
@@ -59,32 +59,29 @@ export function ProductCard({
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
 
-        {/* Discount badge */}
+        {/* Discount badge — top-left, red (Shein style) */}
         {product.discount && (
-          <div className="absolute right-2 top-2 rounded-full bg-shein-pink px-2 py-0.5 text-[10px] font-bold text-white shadow">
+          <div className="absolute left-0 top-0 bg-shein-red px-1.5 py-0.5 text-[10px] font-bold text-white sm:text-xs">
             -{product.discount}%
           </div>
         )}
 
-        {/* New badge */}
+        {/* New badge — top-right (under wishlist) */}
         {product.isNewArrival && (
-          <div className="absolute left-2 top-2 rounded-full bg-black px-2 py-0.5 text-[10px] font-bold text-white">
+          <div className="absolute right-2 top-9 rounded-sm bg-black px-1.5 py-0.5 text-[9px] font-bold text-white sm:text-[10px]">
             جديد
           </div>
         )}
 
-        {/* Wishlist */}
+        {/* Wishlist heart — top-right */}
         <button
           onClick={handleWish}
-          className={cn(
-            "absolute left-2 top-2 grid h-8 w-8 place-items-center rounded-full bg-white/90 shadow backdrop-blur transition hover:scale-110",
-            product.isNewArrival && "top-9"
-          )}
+          className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-white/90 shadow backdrop-blur transition hover:scale-110"
           aria-label="إضافة للمفضلة"
         >
           <Heart
             className={cn(
-              "h-4 w-4 transition",
+              "h-3.5 w-3.5 transition",
               isWished
                 ? "fill-shein-pink text-shein-pink"
                 : "text-shein-text"
@@ -92,40 +89,33 @@ export function ProductCard({
           />
         </button>
 
-        {/* Quick view (hover) */}
+        {/* ADD TO CART button — hover (desktop) / always (mobile) */}
         <div
           className={cn(
-            "absolute inset-x-0 bottom-0 flex translate-y-full items-center justify-center gap-2 bg-black/70 p-2 backdrop-blur transition-transform duration-300",
-            hover && "translate-y-0"
+            "absolute inset-x-0 bottom-0 translate-y-0 transition-transform duration-300 md:translate-y-full md:opacity-0",
+            hover && "md:translate-y-0 md:opacity-100"
           )}
         >
-          <span className="flex items-center gap-1 px-2 py-1 text-xs font-bold text-white">
-            <Eye className="h-3.5 w-3.5" /> عرض سريع
-          </span>
+          <button
+            onClick={handleAdd}
+            className="flex w-full items-center justify-center gap-1.5 bg-shein-pink py-2.5 text-xs font-bold text-white transition hover:bg-shein-pink-dark"
+          >
+            <ShoppingCart className="h-3.5 w-3.5" />
+            أضف للسلة
+          </button>
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-2.5 sm:p-3">
-        <div className="mb-1 flex items-center gap-1">
-          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-          <span className="text-[11px] font-semibold text-shein-text">
-            {product.rating}
-          </span>
-          <span className="text-[10px] text-shein-muted">
-            ({product.reviewsCount})
-          </span>
-          <span className="mr-auto text-[10px] text-shein-muted">
-            {product.subcategory}
-          </span>
-        </div>
-
-        <h3 className="line-clamp-2 min-h-[34px] text-xs font-medium leading-tight text-shein-text sm:text-sm">
+      <div className="p-2 sm:p-2.5">
+        {/* Title — small, gray, 2 lines (Shein style) */}
+        <h3 className="line-clamp-2 min-h-[32px] text-[11px] font-normal leading-tight text-shein-muted sm:text-xs">
           {product.title}
         </h3>
 
-        <div className="mt-2 flex items-baseline gap-1.5">
-          <span className="text-sm font-black text-shein-pink sm:text-base">
+        {/* Price — red, bold + original strikethrough */}
+        <div className="mt-1.5 flex items-baseline gap-1.5">
+          <span className="text-sm font-bold text-shein-red sm:text-base">
             {formatPrice(product.price)}
           </span>
           {product.oldPrice && (
@@ -135,9 +125,20 @@ export function ProductCard({
           )}
         </div>
 
-        {/* Colors */}
-        <div className="mt-2 flex items-center gap-1">
-          {product.colors.slice(0, 4).map((c) => (
+        {/* Rating row */}
+        <div className="mt-1 flex items-center gap-1">
+          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+          <span className="text-[10px] font-semibold text-shein-text">
+            {product.rating}
+          </span>
+          <span className="text-[9px] text-shein-muted">
+            ({product.reviewsCount})
+          </span>
+        </div>
+
+        {/* Colors — dots row */}
+        <div className="mt-1.5 flex items-center gap-1">
+          {product.colors.slice(0, 5).map((c) => (
             <span
               key={c.name}
               className="h-3 w-3 rounded-full border border-shein-border"
@@ -145,21 +146,12 @@ export function ProductCard({
               title={c.name}
             />
           ))}
-          {product.colors.length > 4 && (
+          {product.colors.length > 5 && (
             <span className="text-[9px] text-shein-muted">
-              +{product.colors.length - 4}
+              +{product.colors.length - 5}
             </span>
           )}
         </div>
-
-        {/* Add button */}
-        <button
-          onClick={handleAdd}
-          className="mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-full bg-shein-pink py-1.5 text-xs font-bold text-white transition hover:bg-shein-pink-dark active:scale-95"
-        >
-          <ShoppingCart className="h-3.5 w-3.5" />
-          أضف للسلة
-        </button>
       </div>
     </Link>
   );

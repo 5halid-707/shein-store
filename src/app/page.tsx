@@ -150,7 +150,7 @@ export default function HomePage() {
           >
             <div className="absolute inset-0 opacity-30">
               <img
-                src="https://picsum.photos/seed/promo-women/800/400"
+                src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&h=400&fit=crop&q=80&auto=format"
                 alt=""
                 className="h-full w-full object-cover"
               />
@@ -172,7 +172,7 @@ export default function HomePage() {
           >
             <div className="absolute inset-0 opacity-30">
               <img
-                src="https://picsum.photos/seed/promo-men/800/400"
+                src="https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=800&h=400&fit=crop&q=80&auto=format"
                 alt=""
                 className="h-full w-full object-cover"
               />

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import {
   Camera,
   Send,
@@ -24,7 +25,7 @@ export function SiteFooter() {
         <div className="container-app grid grid-cols-2 gap-4 py-6 md:grid-cols-4">
           {[
             { icon: Truck, title: "شحن سريع", sub: "توصيل لكل السعودية" },
-            { icon: RotateCcw, title: "إرجاع مجاني", sub: "خلال 14 يوم" },
+            { icon: RotateCcw, title: "إرجاع مجاني", sub: "خلال 35 يوم" },
             { icon: ShieldCheck, title: "دفع آمن", sub: "حماية 100%" },
             { icon: CreditCard, title: "الدفع عند الاستلام", sub: "متاح" },
           ].map((f) => (
@@ -44,12 +45,19 @@ export function SiteFooter() {
       {/* Main footer */}
       <div className="container-app grid grid-cols-2 gap-8 py-10 md:grid-cols-4 lg:grid-cols-5">
         <div className="col-span-2 lg:col-span-2">
-          <div className="mb-3 text-2xl font-black">
-            KMH <span className="text-shein-pink">Fashion</span>
+          <div className="mb-3">
+            <Image
+              src="/shein-logo-white.svg"
+              alt="SHEIN"
+              width={140}
+              height={40}
+              className="h-9 w-auto"
+            />
           </div>
           <p className="mb-4 text-sm leading-6 text-white/70">
-            متجر KMH للأزياء العصرية — وجهتك الأولى للتسوق في المملكة العربية
-            السعودية. نوفّر أحدث صيحات الموضة للجنسين والأطفال بأفضل الأسعار.
+            SHEIN — وجهتك الأولى للتسوق في المملكة العربية السعودية. نوفّر أحدث
+            صيحات الموضة للجنسين والأطفال بأفضل الأسعار مع شحن سريع وإرجاع مجاني
+            خلال 35 يوم.
           </p>
           <div className="space-y-2 text-sm text-white/70">
             <div className="flex items-center gap-2">
@@ -161,12 +169,22 @@ export function SiteFooter() {
         </div>
       </div>
 
+      {/* Disclaimer note */}
+      <div className="border-t border-white/10">
+        <div className="container-app py-3 text-center">
+          <p className="text-xs text-white/50">
+            ⚠️ هذا الموقع للعرض فقط — تصميم وتطوير خالد الحربي. ليس متجراً
+            حقيقياً ولا يقبل الطلبات الفعلية.
+          </p>
+        </div>
+      </div>
+
       {/* Payment methods */}
       <div className="border-t border-white/10">
         <div className="container-app flex flex-col items-center justify-between gap-4 py-5 md:flex-row">
           <div className="text-xs text-white/60">
-            © {new Date().getFullYear()} KMH Fashion — جميع الحقوق محفوظة. صنع
-            بكل حب في السعودية 🇸🇦
+            © {new Date().getFullYear()} SHEIN — جميع الحقوق محفوظة. تصميم خالد
+            الحربي 🇸🇦
           </div>
           <div className="flex flex-wrap items-center gap-2">
             {["mada", "visa", "mc", "apple", "stc", "cod"].map((p) => (

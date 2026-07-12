@@ -27,7 +27,7 @@ export default function CartPage() {
   const total = subtotal + shipping - discount;
 
   const applyPromo = () => {
-    if (promo.trim().toUpperCase() === "KMH15") {
+    if (promo.trim().toUpperCase() === "SHEIN15") {
       setAppliedDiscount(Math.round(subtotal * 0.15));
       showToast("تم تطبيق كود الخصم 15% ✓", "success");
     } else if (promo.trim().toUpperCase() === "WELCOME") {
@@ -193,7 +193,7 @@ export default function CartPage() {
                 <input
                   value={promo}
                   onChange={(e) => setPromo(e.target.value)}
-                  placeholder="KMH15 أو WELCOME"
+                  placeholder="SHEIN15 أو WELCOME"
                   className="flex-1 rounded-full border border-shein-border bg-shein-gray/50 px-3 py-2 text-xs outline-none focus:border-shein-pink"
                 />
                 <button
