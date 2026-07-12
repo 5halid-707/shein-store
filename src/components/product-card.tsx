@@ -66,8 +66,15 @@ export function ProductCard({
           </div>
         )}
 
-        {/* New badge — top-right (under wishlist) */}
-        {product.isNewArrival && (
+        {/* Brand badge — top-right corner (under wishlist) */}
+        {product.isBrand && (
+          <div className="absolute right-2 top-9 rounded-sm bg-shein-black px-1.5 py-0.5 text-[9px] font-bold text-white sm:text-[10px]">
+            {product.brand}
+          </div>
+        )}
+
+        {/* New badge */}
+        {product.isNewArrival && !product.isBrand && (
           <div className="absolute right-2 top-9 rounded-sm bg-black px-1.5 py-0.5 text-[9px] font-bold text-white sm:text-[10px]">
             جديد
           </div>
@@ -82,9 +89,7 @@ export function ProductCard({
           <Heart
             className={cn(
               "h-3.5 w-3.5 transition",
-              isWished
-                ? "fill-shein-pink text-shein-pink"
-                : "text-shein-text"
+              isWished ? "fill-shein-pink text-shein-pink" : "text-shein-text"
             )}
           />
         </button>
@@ -108,8 +113,15 @@ export function ProductCard({
 
       {/* Content */}
       <div className="p-2 sm:p-2.5">
+        {/* Discount text in red below image — Shein style */}
+        {product.discount && (
+          <div className="mb-0.5 text-[11px] font-bold text-shein-red sm:text-xs">
+            خصم {product.discount}%
+          </div>
+        )}
+
         {/* Title — small, gray, 2 lines (Shein style) */}
-        <h3 className="line-clamp-2 min-h-[32px] text-[11px] font-normal leading-tight text-shein-muted sm:text-xs">
+        <h3 className="line-clamp-2 min-h-[28px] text-[11px] font-normal leading-tight text-shein-muted sm:text-xs">
           {product.title}
         </h3>
 

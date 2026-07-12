@@ -1,12 +1,15 @@
 import { HeroCarousel } from "@/components/hero-carousel";
-import { FlashSaleTimer } from "@/components/flash-sale-timer";
 import { ProductCard } from "@/components/product-card";
+import { BigDeals } from "@/components/sections/big-deals";
+import { FlashSale } from "@/components/sections/flash-sale";
+import { TopTrends } from "@/components/sections/top-trends";
+import { BrandZone } from "@/components/sections/brand-zone";
 import {
   CATEGORIES,
   PRODUCTS,
+  QUICK_CATEGORIES,
   TRENDING_CATEGORIES,
   getBestSellers,
-  getFlashSaleProducts,
   getNewArrivals,
 } from "@/data/products";
 import Link from "next/link";
@@ -24,7 +27,6 @@ import {
 } from "lucide-react";
 
 export default function HomePage() {
-  const flashSale = getFlashSaleProducts();
   const newArrivals = getNewArrivals();
   const bestSellers = getBestSellers();
 
@@ -34,8 +36,8 @@ export default function HomePage() {
 
       {/* Quick categories (mobile + desktop) */}
       <section className="container-app py-4">
-        <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 sm:gap-3 md:grid-cols-6">
-          {CATEGORIES.map((c) => (
+        <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 sm:gap-3 md:grid-cols-6 lg:grid-cols-12">
+          {QUICK_CATEGORIES.map((c) => (
             <Link
               key={c.slug}
               href={`/category/${c.slug}`}
@@ -52,12 +54,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Promo banner strip */}
+      {/* Trust strip */}
       <section className="container-app py-2">
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {[
             { icon: Truck, title: "شحن سريع", sub: "لكل السعودية" },
-            { icon: RotateCcw, title: "إرجاع مجاني", sub: "خلال 14 يوم" },
+            { icon: RotateCcw, title: "إرجاع مجاني", sub: "خلال 35 يوم" },
             { icon: ShieldCheck, title: "دفع آمن", sub: "حماية 100%" },
             { icon: Headphones, title: "دعم 24/7", sub: "خدمة عملاء" },
           ].map((f) => (
@@ -75,40 +77,105 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Flash Sale */}
+      {/* عروض كبرى — Big Deals */}
+      <BigDeals />
+
+      {/* تخفيضات سريعة — Flash Sale with countdown */}
+      <FlashSale />
+
+      {/* أهم الترندات — Top Trends with hashtags */}
+      <TopTrends />
+
+      {/* منطقة العلامة التجارية — Brand Zone */}
+      <BrandZone />
+
+      {/* Mid promo banner strip */}
       <section className="container-app py-4">
-        <div className="overflow-hidden rounded-2xl border-2 border-shein-pink bg-gradient-to-l from-shein-pink/10 to-white">
-          <div className="flex items-center justify-between gap-2 border-b border-shein-pink/20 p-3 sm:p-4">
-            <div className="flex items-center gap-2">
-              <Flame className="h-6 w-6 text-shein-pink" />
-              <div>
-                <h2 className="text-base font-black sm:text-xl">
-                  عروض اليوم المميزة
-                </h2>
-                <p className="hidden text-xs text-shein-muted sm:block">
-                  خصومات حتى 70% — لفترة محدودة!
-                </p>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
+          <Link
+            href="/category/women"
+            className="relative h-32 overflow-hidden rounded-2xl bg-gradient-to-l from-shein-pink to-shein-pink-light p-4 sm:h-40"
+          >
+            <div className="absolute inset-0 opacity-30">
+              <img
+                src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&h=400&fit=crop&q=80&auto=format"
+                alt=""
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="relative flex h-full flex-col justify-center text-white">
+              <div className="text-xs font-bold opacity-90">للنساء</div>
+              <div className="text-lg font-black sm:text-2xl">تشكيلة الصيف</div>
+              <div className="text-xs opacity-90">حتى 50% خصم</div>
+              <span className="mt-2 inline-flex w-fit items-center gap-1 rounded-full bg-white px-3 py-1 text-[10px] font-bold text-shein-pink">
+                تسوّقي الآن <ArrowLeft className="h-3 w-3" />
+              </span>
+            </div>
+          </Link>
+          <Link
+            href="/category/men"
+            className="relative h-32 overflow-hidden rounded-2xl bg-gradient-to-l from-black to-shein-dark p-4 sm:h-40"
+          >
+            <div className="absolute inset-0 opacity-30">
+              <img
+                src="https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=800&h=400&fit=crop&q=80&auto=format"
+                alt=""
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="relative flex h-full flex-col justify-center text-white">
+              <div className="text-xs font-bold opacity-90">للرجال</div>
+              <div className="text-lg font-black sm:text-2xl">
+                أناقة الرجل العصري
               </div>
+              <div className="text-xs opacity-90">تشكيلة جديدة 2026</div>
+              <span className="mt-2 inline-flex w-fit items-center gap-1 rounded-full bg-shein-pink px-3 py-1 text-[10px] font-bold text-white">
+                تسوّق الآن <ArrowLeft className="h-3 w-3" />
+              </span>
             </div>
-            <div className="flex items-center gap-2 sm:gap-3">
-              <FlashSaleTimer targetHours={12} />
-            </div>
-          </div>
-          <div className="p-3 sm:p-4">
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-5">
-              {flashSale.slice(0, 10).map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
-            <div className="mt-4 text-center">
-              <Link
-                href="/category/all?sale=true"
-                className="inline-flex items-center gap-1 rounded-full bg-shein-pink px-5 py-2.5 text-xs font-bold text-white hover:bg-shein-pink-dark"
-              >
-                عرض كل العروض <ArrowLeft className="h-3.5 w-3.5" />
-              </Link>
-            </div>
-          </div>
+          </Link>
+        </div>
+      </section>
+
+      {/* وصل حديثاً — New Arrivals */}
+      <section className="container-app py-4">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="flex items-center gap-2 text-base font-black sm:text-xl">
+            <Sparkles className="h-5 w-5 text-shein-pink" />
+            وصل حديثاً
+          </h2>
+          <Link
+            href="/category/all?filter=new"
+            className="text-xs font-bold text-shein-pink hover:underline"
+          >
+            عرض الكل ←
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-5">
+          {newArrivals.slice(0, 10).map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
+        </div>
+      </section>
+
+      {/* الأكثر مبيعاً — Best Sellers */}
+      <section className="container-app py-4">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="flex items-center gap-2 text-base font-black sm:text-xl">
+            <Flame className="h-5 w-5 text-shein-pink" />
+            الأكثر مبيعاً
+          </h2>
+          <Link
+            href="/category/all?filter=best"
+            className="text-xs font-bold text-shein-pink hover:underline"
+          >
+            عرض الكل ←
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-5">
+          {bestSellers.slice(0, 10).map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
         </div>
       </section>
 
@@ -141,99 +208,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Mid promo banner */}
-      <section className="container-app py-4">
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
-          <Link
-            href="/category/women"
-            className="relative h-32 overflow-hidden rounded-2xl bg-gradient-to-l from-shein-pink to-shein-pink-light p-4 sm:h-40"
-          >
-            <div className="absolute inset-0 opacity-30">
-              <img
-                src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&h=400&fit=crop&q=80&auto=format"
-                alt=""
-                className="h-full w-full object-cover"
-              />
-            </div>
-            <div className="relative flex h-full flex-col justify-center text-white">
-              <div className="text-xs font-bold opacity-90">للنساء</div>
-              <div className="text-lg font-black sm:text-2xl">
-                تشكيلة الصيف
-              </div>
-              <div className="text-xs opacity-90">حتى 50% خصم</div>
-              <span className="mt-2 inline-flex w-fit items-center gap-1 rounded-full bg-white px-3 py-1 text-[10px] font-bold text-shein-pink">
-                تسوّقي الآن <ArrowLeft className="h-3 w-3" />
-              </span>
-            </div>
-          </Link>
-          <Link
-            href="/category/men"
-            className="relative h-32 overflow-hidden rounded-2xl bg-gradient-to-l from-black to-shein-dark p-4 sm:h-40"
-          >
-            <div className="absolute inset-0 opacity-30">
-              <img
-                src="https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=800&h=400&fit=crop&q=80&auto=format"
-                alt=""
-                className="h-full w-full object-cover"
-              />
-            </div>
-            <div className="relative flex h-full flex-col justify-center text-white">
-              <div className="text-xs font-bold opacity-90">للرجال</div>
-              <div className="text-lg font-black sm:text-2xl">
-                أناقة الرجل العصري
-              </div>
-              <div className="text-xs opacity-90">تشكيلة جديدة 2026</div>
-              <span className="mt-2 inline-flex w-fit items-center gap-1 rounded-full bg-shein-pink px-3 py-1 text-[10px] font-bold text-white">
-                تسوّق الآن <ArrowLeft className="h-3 w-3" />
-              </span>
-            </div>
-          </Link>
-        </div>
-      </section>
-
-      {/* New Arrivals */}
-      <section className="container-app py-4">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="flex items-center gap-2 text-base font-black sm:text-xl">
-            <Sparkles className="h-5 w-5 text-shein-pink" />
-            وصل حديثاً
-          </h2>
-          <Link
-            href="/category/all?filter=new"
-            className="text-xs font-bold text-shein-pink hover:underline"
-          >
-            عرض الكل ←
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-5">
-          {newArrivals.slice(0, 10).map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
-      </section>
-
-      {/* Best sellers */}
-      <section className="container-app py-4">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="flex items-center gap-2 text-base font-black sm:text-xl">
-            <Flame className="h-5 w-5 text-shein-pink" />
-            الأكثر مبيعاً
-          </h2>
-          <Link
-            href="/category/all?filter=best"
-            className="text-xs font-bold text-shein-pink hover:underline"
-          >
-            عرض الكل ←
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-5">
-          {bestSellers.slice(0, 10).map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
-      </section>
-
-      {/* Recommended for you */}
+      {/* موصى به لك — Recommended */}
       <section className="container-app py-4">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-base font-black sm:text-xl">موصى به لك</h2>

@@ -1,16 +1,9 @@
-export type CategoryName =
-  | "women"
-  | "men"
-  | "kids"
-  | "beauty"
-  | "home"
-  | "accessories";
-
 export interface Category {
-  slug: CategoryName;
+  slug: string;
   name: string;
   nameEn: string;
   icon: string;
+  subcategories?: string[];
 }
 
 export interface ProductColor {
@@ -29,7 +22,7 @@ export interface Review {
 export interface Product {
   id: string;
   title: string;
-  category: CategoryName;
+  category: string;
   subcategory: string;
   price: number;
   oldPrice?: number;
@@ -45,6 +38,10 @@ export interface Product {
   isFlashSale?: boolean;
   isNewArrival?: boolean;
   isBestSeller?: boolean;
+  isBigDeal?: boolean;
+  isBrand?: boolean;
+  isTrending?: boolean;
+  trendingTag?: string;
   stock: number;
   brand: string;
   tags: string[];

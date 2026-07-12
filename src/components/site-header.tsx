@@ -3,7 +3,15 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Heart, Menu, Search, ShoppingCart, User, X } from "lucide-react";
+import {
+  ChevronDown,
+  Heart,
+  Menu,
+  Search,
+  ShoppingCart,
+  User,
+  X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCart } from "@/context/cart-context";
 import { useWishlist } from "@/context/wishlist-context";
@@ -17,6 +25,7 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [hoveredCat, setHoveredCat] = useState<string | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -48,7 +57,11 @@ export function SiteHeader() {
           {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
 
-        <Link href="/" className="flex shrink-0 items-center" aria-label="SHEIN">
+        <Link
+          href="/"
+          className="flex shrink-0 items-center"
+          aria-label="SHEIN"
+        >
           <Image
             src="/shein-logo.svg"
             alt="SHEIN"
@@ -68,7 +81,7 @@ export function SiteHeader() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="ابحث عن المنتجات، الماركات، الفئات..."
+              placeholder="فستان"
               className="w-full bg-transparent px-3 py-2.5 text-sm outline-none placeholder:text-shein-muted"
             />
             <button
@@ -130,7 +143,7 @@ export function SiteHeader() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="ابحث عن منتج..."
+              placeholder="فستان"
               className="w-full bg-transparent px-2 py-2 text-sm outline-none placeholder:text-shein-muted"
             />
             <button
@@ -143,18 +156,68 @@ export function SiteHeader() {
         </form>
       </div>
 
-      {/* Category nav (desktop) */}
-      <nav className="hidden border-t border-shein-border bg-white md:block">
+      {/* Category nav (desktop) — with hover dropdown */}
+      <nav
+        className="hidden border-t border-shein-border bg-white md:block"
+        onMouseLeave={() => setHoveredCat(null)}
+      >
         <div className="container-app flex h-11 items-center gap-1 overflow-x-auto no-scrollbar">
           {CATEGORIES.map((c) => (
-            <Link
+            <div
               key={c.slug}
-              href={`/category/${c.slug}`}
-              className="flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 text-sm font-medium text-shein-text transition hover:text-shein-pink"
+              className="relative"
+              onMouseEnter={() => setHoveredCat(c.slug)}
             >
-              <span className="text-base">{c.icon}</span>
-              {c.name}
-            </Link>
+              <Link
+                href={`/category/${c.slug}`}
+                className={cn(
+                  "flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 text-sm font-medium transition",
+                  hoveredCat === c.slug
+                    ? "text-shein-pink"
+                    : "text-shein-text hover:text-shein-pink"
+                )}
+              >
+                <span className="text-base">{c.icon}</span>
+                {c.name}
+                {c.subcategories && c.subcategories.length > 0 && (
+                  <ChevronDown
+                    className={cn(
+                      "h-3 w-3 transition",
+                      hoveredCat === c.slug && "rotate-180"
+                    )}
+                  />
+                )}
+              </Link>
+
+              {/* Dropdown */}
+              {hoveredCat === c.slug &&
+                c.subcategories &&
+                c.subcategories.length > 0 && (
+                  <div className="absolute right-0 top-full z-50 w-64 overflow-hidden rounded-b-xl border border-shein-border bg-white shadow-2xl">
+                    <div className="grid grid-cols-1 gap-0">
+                      <Link
+                        href={`/category/${c.slug}`}
+                        className="flex items-center justify-between border-b border-shein-border bg-shein-gray px-4 py-2.5 text-xs font-bold text-shein-text hover:bg-shein-pink hover:text-white"
+                      >
+                        كل {c.name}
+                        <span>←</span>
+                      </Link>
+                      {c.subcategories.map((sub) => (
+                        <Link
+                          key={sub}
+                          href={`/category/${c.slug}?q=${encodeURIComponent(
+                            sub
+                          )}`}
+                          className="flex items-center gap-2 px-4 py-2.5 text-xs text-shein-text transition hover:bg-shein-gray hover:text-shein-pink"
+                        >
+                          <span className="h-1.5 w-1.5 rounded-full bg-shein-pink/40" />
+                          {sub}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+            </div>
           ))}
           <Link
             href="/category/all"
@@ -172,7 +235,7 @@ export function SiteHeader() {
             className="absolute inset-0 bg-black/40"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="absolute right-0 top-0 h-full w-72 max-w-[85%] bg-white p-4 shadow-xl">
+          <div className="absolute right-0 top-0 h-full w-72 max-w-[85%] overflow-y-auto bg-white p-4 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
               <Image
                 src="/shein-logo.svg"
@@ -197,8 +260,12 @@ export function SiteHeader() {
                   className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium hover:bg-shein-gray"
                 >
                   <span className="text-xl">{c.icon}</span>
-                  {c.name}
-                  <span className="text-xs text-shein-muted">({c.nameEn})</span>
+                  <div className="flex-1">
+                    <div>{c.name}</div>
+                    <div className="text-[10px] text-shein-muted">
+                      {c.nameEn}
+                    </div>
+                  </div>
                 </Link>
               ))}
               <Link

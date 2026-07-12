@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { SlidersHorizontal, X, ChevronDown, Grid2x2, Grid3x3 } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 import { PRODUCTS, CATEGORIES } from "@/data/products";
-import type { Product, CategoryName } from "@/types";
+import type { Product } from "@/types";
 import { cn } from "@/lib/utils";
 
 const SORT_OPTIONS = [

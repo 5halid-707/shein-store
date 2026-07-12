@@ -1,43 +1,33 @@
-import type { Category, Product } from "@/types";
+import type { Product } from "@/types";
 
-export const CATEGORIES: Category[] = [
-  { slug: "women", name: "نسائي", nameEn: "Women", icon: "👗" },
-  { slug: "men", name: "رجالي", nameEn: "Men", icon: "👔" },
-  { slug: "kids", name: "أطفال", nameEn: "Kids", icon: "🧸" },
-  { slug: "beauty", name: "تجميل", nameEn: "Beauty", icon: "💄" },
-  { slug: "home", name: "المنزل", nameEn: "Home", icon: "🏠" },
-  { slug: "accessories", name: "إكسسوارات", nameEn: "Accessories", icon: "⌚" },
-];
-
-export const TRENDING_CATEGORIES = [
-  { slug: "women", name: "فساتين", icon: "👗", count: 320 },
-  { slug: "men", name: "قمصان", icon: "👔", count: 180 },
-  { slug: "women", name: "أحذية", icon: "👠", count: 250 },
-  { slug: "accessories", name: "حقائب", icon: "👜", count: 145 },
-  { slug: "beauty", name: "مكياج", icon: "💄", count: 210 },
-  { slug: "accessories", name: "ساعات", icon: "⌚", count: 95 },
-  { slug: "accessories", name: "نظارات", icon: "🕶️", count: 70 },
-  { slug: "women", name: "إكسسوارات", icon: "💍", count: 160 },
-];
+// Re-export categories so existing imports keep working.
+export {
+  CATEGORIES,
+  QUICK_CATEGORIES,
+  TRENDING_CATEGORIES,
+  getCategoryBySlug,
+} from "./categories";
 
 // Real Unsplash fashion product photos.
 // Format: https://images.unsplash.com/photo-{ID}?w=600&h=750&fit=crop&q=80
-const u = (id: string) => `https://images.unsplash.com/${id}?w=600&h=750&fit=crop&q=80&auto=format`;
+const u = (id: string) =>
+  `https://images.unsplash.com/${id}?w=600&h=750&fit=crop&q=80&auto=format`;
 
-// Helper to build a 5-image gallery from a primary image + 4 related ones
+// Helper to build a 5-image gallery from a primary image + related ones.
 const gallery = (primary: string, related: string[]) => {
   const g = [primary, ...related];
   while (g.length < 5) g.push(related[g.length % related.length] ?? primary);
   return g.slice(0, 5);
 };
 
-// Curated Unsplash photo IDs per category (real fashion photos)
+// Curated Unsplash photo IDs per category (real fashion photos).
 const PHOTOS = {
   // Women's dresses / clothing
   womenDress1: "photo-1572804013309-59a88b7e92f1",
   womenDress2: "photo-1595777457583-95e059d581b8",
   womenDress3: "photo-1539109136881-3be0616acf4b",
   womenDress4: "photo-1490481651871-ab68de25d43d",
+  womenDress5: "photo-1566174053879-31528523f8ae",
   womenTop1: "photo-1581044777550-4cfa60707c03",
   womenTop2: "photo-1485518882345-15568b007407",
   womenPants1: "photo-1594633312681-425c7b97ccd1",
@@ -52,6 +42,7 @@ const PHOTOS = {
   womenBag1: "photo-1584917865442-de89df76afd3",
   womenBag2: "photo-1548036328-c9fa89d128fa",
   womenBag3: "photo-1591561954557-26941169b49e",
+  womenSneakers: "photo-1551107696-a4b0c5a0d9a2",
 
   // Men
   menShirt1: "photo-1620799140408-edc6dcb6d633",
@@ -62,13 +53,15 @@ const PHOTOS = {
   menJacket1: "photo-1596755094514-f87e34085b2c",
   menJacket2: "photo-1516257984-b1b4d707412e",
   menShoes1: "photo-1549298916-b41d501d3772",
-  menShoes2: "photo-1606107557195-0e29a4b5b4aa",
+  menShoes2: "photo-1606107557195-02129db5a410",
+  menSneakers: "photo-1556906781-9a412961c28c",
 
   // Kids
   kidsDress: "photo-1622290291468-a28f7a7dc4a8",
-  kidsBoy: "photo-1519278409-1f56fdda7fe5",
+  kidsBoy: "photo-1519278409-1f34f7a7dc4a8",
   kidsToy: "photo-1503944583220-79d8926ad5e2",
   kidsShoes: "photo-1514989940723-e8e51635b782",
+  kidsBlock: "photo-1558877385-8c1cee0c2b66",
 
   // Beauty
   beautyLipstick: "photo-1522335789203-aabd1fc54bc9",
@@ -76,6 +69,7 @@ const PHOTOS = {
   beautyPerfume: "photo-1541643600914-78b084683601",
   beautyPalette: "photo-1596462502278-27bfdc403348",
   beautySet: "photo-1571781926291-c477ebfd024b",
+  beautyNail: "photo-1604654894610-d383bc975abd",
 
   // Accessories
   accWatch1: "photo-1611652022419-a9419f74343d",
@@ -86,17 +80,54 @@ const PHOTOS = {
   accNecklace2: "photo-1611591437281-460bfbe1220a",
   accEarrings: "photo-1535632066927-ab7c9ab60908",
 
-  // Home
+  // Home & Kitchen
   homeVase: "photo-1513519245088-0e12902e5a38",
   homeCups: "photo-1493663284031-b7e3aefcae8e",
   homeCandle: "photo-1582058091505-f87a2e55a40f",
   homeDecor: "photo-1513519245088-0e12902e5a38",
+  homeLamp: "photo-1513506003901-1e6a229e2d15",
+  homeBedding: "photo-1522771739844-6a9f6d5f14af",
+
+  // Electronics / Brands
+  elecPhone: "photo-1511707171634-5f897ff02aa9",
+  elecTablet: "photo-1544244015-0df4b3ffc6b0",
+  elecEarbuds: "photo-1572569511254-d8f925fe2cbb",
+  elecCamera: "photo-1502920917128-1aa500764cbd",
+  elecSpeaker: "photo-1608043152269-423dbba4e7e1",
+  elecPsController: "photo-1592840496694-26d035b52b48",
+  elecPS5: "photo-1607853202273-797f1c22a38e",
+  elecWatch: "photo-1546868871-7041f2a55e12",
+  elecMacbook: "photo-1517336714731-489689fd1ca8",
+  elecHeadphones: "photo-1505740420928-5e560c06d30e",
+
+  // Sports
+  sportYoga: "photo-1518611012118-696072aa579a",
+  sportRun: "photo-1483721310020-03333e577078",
+  sportDumbbell: "photo-1583454110551-21f2fa2afe61",
+  sportBottle: "photo-1602143407151-7111542de6e8",
+
+  // Luggage / Backpacks
+  bagBackpack: "photo-1553062407-98eeb64c6a62",
+  bagClutch: "photo-1564422170194-896b89110ef8",
+  bagSuitcase: "photo-1553520723-57d5e6d2b2f9",
+  bagWallet: "photo-1627123424574-724758594e93",
 } as const;
 
-const mk = (p: Partial<Product> & { id: string; title: string; category: any; price: number; image: string; images?: string[] }): Product => {
+const mk = (
+  p: Partial<Product> & {
+    id: string;
+    title: string;
+    category: string;
+    price: number;
+    image: string;
+    images?: string[];
+  }
+): Product => {
   const price = p.price;
-  const oldPrice = p.oldPrice ?? Math.round(price * (1 + (p.discount ?? 30) / 100));
-  const discount = p.discount ?? Math.round(((oldPrice - price) / oldPrice) * 100);
+  const oldPrice =
+    p.oldPrice ?? Math.round(price * (1 + (p.discount ?? 30) / 100));
+  const discount =
+    p.discount ?? Math.round(((oldPrice - price) / oldPrice) * 100);
   const images = p.images ?? gallery(p.image, [p.image]);
   return {
     subcategory: "",
@@ -143,18 +174,68 @@ const mk = (p: Partial<Product> & { id: string; title: string; category: any; pr
   } as Product;
 };
 
-const womenImgs = [PHOTOS.womenDress1, PHOTOS.womenDress2, PHOTOS.womenDress3, PHOTOS.womenDress4, PHOTOS.womenTop1];
-const menImgs = [PHOTOS.menShirt1, PHOTOS.menShirt2, PHOTOS.menPolo, PHOTOS.menJeans, PHOTOS.menTshirt, PHOTOS.menJacket1];
-const kidsImgs = [PHOTOS.kidsDress, PHOTOS.kidsBoy, PHOTOS.kidsToy, PHOTOS.kidsShoes];
-const beautyImgs = [PHOTOS.beautyLipstick, PHOTOS.beautyCream, PHOTOS.beautyPerfume, PHOTOS.beautyPalette, PHOTOS.beautySet];
-const accImgs = [PHOTOS.accWatch1, PHOTOS.accWatch2, PHOTOS.accGlasses1, PHOTOS.accGlasses2, PHOTOS.accNecklace1, PHOTOS.accNecklace2, PHOTOS.accEarrings];
-const homeImgs = [PHOTOS.homeVase, PHOTOS.homeCups, PHOTOS.homeCandle, PHOTOS.homeDecor];
+const womenImgs = [
+  PHOTOS.womenDress1,
+  PHOTOS.womenDress2,
+  PHOTOS.womenDress3,
+  PHOTOS.womenDress4,
+  PHOTOS.womenTop1,
+];
+const menImgs = [
+  PHOTOS.menShirt1,
+  PHOTOS.menShirt2,
+  PHOTOS.menPolo,
+  PHOTOS.menJeans,
+  PHOTOS.menTshirt,
+  PHOTOS.menJacket1,
+];
+const kidsImgs = [
+  PHOTOS.kidsDress,
+  PHOTOS.kidsBoy,
+  PHOTOS.kidsToy,
+  PHOTOS.kidsShoes,
+];
+const beautyImgs = [
+  PHOTOS.beautyLipstick,
+  PHOTOS.beautyCream,
+  PHOTOS.beautyPerfume,
+  PHOTOS.beautyPalette,
+  PHOTOS.beautySet,
+];
+const accImgs = [
+  PHOTOS.accWatch1,
+  PHOTOS.accWatch2,
+  PHOTOS.accGlasses1,
+  PHOTOS.accGlasses2,
+  PHOTOS.accNecklace1,
+  PHOTOS.accNecklace2,
+  PHOTOS.accEarrings,
+];
+const homeImgs = [
+  PHOTOS.homeVase,
+  PHOTOS.homeCups,
+  PHOTOS.homeCandle,
+  PHOTOS.homeDecor,
+];
+const elecImgs = [
+  PHOTOS.elecPhone,
+  PHOTOS.elecTablet,
+  PHOTOS.elecEarbuds,
+  PHOTOS.elecCamera,
+  PHOTOS.elecSpeaker,
+];
+const sportImgs = [
+  PHOTOS.sportYoga,
+  PHOTOS.sportRun,
+  PHOTOS.sportDumbbell,
+  PHOTOS.sportBottle,
+];
 
 export const PRODUCTS: Product[] = [
-  // ===== WOMEN =====
+  // ===== WOMEN (8) =====
   mk({
     id: "w-dress-01",
-    title: "فستان سهرة طويل مطرز بكتف واحد",
+    title: "فستان سهرة طويل مطرز بكتف واحدة",
     category: "women",
     subcategory: "فساتين",
     price: 249,
@@ -162,6 +243,7 @@ export const PRODUCTS: Product[] = [
     discount: 38,
     isFlashSale: true,
     isBestSeller: true,
+    isBigDeal: true,
     sizes: ["S", "M", "L", "XL"],
     colors: [
       { name: "أسود", hex: "#000000" },
@@ -183,6 +265,8 @@ export const PRODUCTS: Product[] = [
     oldPrice: 199,
     discount: 35,
     isNewArrival: true,
+    isTrending: true,
+    trendingTag: "#فستان_صيفي",
     colors: [
       { name: "وردي", hex: "#ee296d" },
       { name: "أصفر", hex: "#f1c40f" },
@@ -209,7 +293,10 @@ export const PRODUCTS: Product[] = [
     rating: 4.4,
     reviewsCount: 156,
     image: u(PHOTOS.womenTop1),
-    images: gallery(u(PHOTOS.womenTop1), [u(PHOTOS.womenTop2), ...womenImgs.map(u)]),
+    images: gallery(u(PHOTOS.womenTop1), [
+      u(PHOTOS.womenTop2),
+      ...womenImgs.map(u),
+    ]),
   }),
   mk({
     id: "w-pants-01",
@@ -229,7 +316,10 @@ export const PRODUCTS: Product[] = [
     rating: 4.7,
     reviewsCount: 201,
     image: u(PHOTOS.womenPants1),
-    images: gallery(u(PHOTOS.womenPants1), [u(PHOTOS.womenPants2), ...womenImgs.map(u)]),
+    images: gallery(u(PHOTOS.womenPants1), [
+      u(PHOTOS.womenPants2),
+      ...womenImgs.map(u),
+    ]),
   }),
   mk({
     id: "w-shoes-01",
@@ -249,7 +339,10 @@ export const PRODUCTS: Product[] = [
     rating: 4.5,
     reviewsCount: 178,
     image: u(PHOTOS.womenHeels),
-    images: gallery(u(PHOTOS.womenHeels), [u(PHOTOS.womenHeels2), ...womenImgs.map(u)]),
+    images: gallery(u(PHOTOS.womenHeels), [
+      u(PHOTOS.womenHeels2),
+      ...womenImgs.map(u),
+    ]),
   }),
   mk({
     id: "w-bag-01",
@@ -261,6 +354,7 @@ export const PRODUCTS: Product[] = [
     discount: 39,
     isBestSeller: true,
     isNewArrival: true,
+    isBigDeal: true,
     colors: [
       { name: "أسود", hex: "#000000" },
       { name: "بني", hex: "#8b5e3c" },
@@ -269,7 +363,11 @@ export const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 312,
     image: u(PHOTOS.womenBag1),
-    images: gallery(u(PHOTOS.womenBag1), [u(PHOTOS.womenBag2), u(PHOTOS.womenBag3), ...womenImgs.map(u)]),
+    images: gallery(u(PHOTOS.womenBag1), [
+      u(PHOTOS.womenBag2),
+      u(PHOTOS.womenBag3),
+      ...womenImgs.map(u),
+    ]),
   }),
   mk({
     id: "w-dress-03",
@@ -279,6 +377,8 @@ export const PRODUCTS: Product[] = [
     price: 99,
     oldPrice: 159,
     discount: 38,
+    isTrending: true,
+    trendingTag: "#فستان_مكسي",
     colors: [
       { name: "بيج", hex: "#e8d8c4" },
       { name: "أخضر", hex: "#27ae60" },
@@ -286,7 +386,10 @@ export const PRODUCTS: Product[] = [
     rating: 4.3,
     reviewsCount: 67,
     image: u(PHOTOS.womenDress3),
-    images: gallery(u(PHOTOS.womenDress3), [u(PHOTOS.womenDress4), ...womenImgs.map(u)]),
+    images: gallery(u(PHOTOS.womenDress3), [
+      u(PHOTOS.womenDress4),
+      ...womenImgs.map(u),
+    ]),
   }),
   mk({
     id: "w-skirt-01",
@@ -304,10 +407,54 @@ export const PRODUCTS: Product[] = [
     rating: 4.6,
     reviewsCount: 94,
     image: u(PHOTOS.womenSkirt1),
-    images: gallery(u(PHOTOS.womenSkirt1), [u(PHOTOS.womenCoat1), ...womenImgs.map(u)]),
+    images: gallery(u(PHOTOS.womenSkirt1), [
+      u(PHOTOS.womenCoat1),
+      ...womenImgs.map(u),
+    ]),
+  }),
+  mk({
+    id: "w-sneakers-01",
+    title: "حذاء رياضي نسائي مريح",
+    category: "women",
+    subcategory: "أحذية",
+    price: 159,
+    oldPrice: 249,
+    discount: 36,
+    isBigDeal: true,
+    sizes: ["36", "37", "38", "39", "40"],
+    colors: [
+      { name: "أبيض", hex: "#ffffff" },
+      { name: "وردي", hex: "#ee296d" },
+      { name: "رمادي", hex: "#7f8c8d" },
+    ],
+    rating: 4.7,
+    reviewsCount: 145,
+    image: u(PHOTOS.womenSneakers),
+    images: gallery(u(PHOTOS.womenSneakers), womenImgs.map(u)),
+  }),
+  mk({
+    id: "w-dress-04",
+    title: "فستان طويل بكسرات كثيفة مثالي للمناسبات",
+    category: "women",
+    subcategory: "فساتين",
+    price: 219,
+    oldPrice: 349,
+    discount: 37,
+    isTrending: true,
+    trendingTag: "#فستان_طويل",
+    sizes: ["S", "M", "L", "XL"],
+    colors: [
+      { name: "أحمر", hex: "#c0392b" },
+      { name: "أسود", hex: "#000000" },
+      { name: "زيتي", hex: "#5d6d50" },
+    ],
+    rating: 4.8,
+    reviewsCount: 188,
+    image: u(PHOTOS.womenDress5),
+    images: gallery(u(PHOTOS.womenDress5), womenImgs.map(u)),
   }),
 
-  // ===== MEN =====
+  // ===== MEN (6) =====
   mk({
     id: "m-shirt-01",
     title: "قميص قطني كلاسيكي بأكمام طويلة",
@@ -317,6 +464,7 @@ export const PRODUCTS: Product[] = [
     oldPrice: 189,
     discount: 37,
     isBestSeller: true,
+    isBigDeal: true,
     sizes: ["S", "M", "L", "XL", "XXL"],
     colors: [
       { name: "أبيض", hex: "#ffffff" },
@@ -346,7 +494,10 @@ export const PRODUCTS: Product[] = [
     rating: 4.5,
     reviewsCount: 132,
     image: u(PHOTOS.menPolo),
-    images: gallery(u(PHOTOS.menPolo), [u(PHOTOS.menShirt2), ...menImgs.map(u)]),
+    images: gallery(u(PHOTOS.menPolo), [
+      u(PHOTOS.menShirt2),
+      ...menImgs.map(u),
+    ]),
   }),
   mk({
     id: "m-pants-01",
@@ -386,7 +537,10 @@ export const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 287,
     image: u(PHOTOS.menShoes1),
-    images: gallery(u(PHOTOS.menShoes1), [u(PHOTOS.menShoes2), ...menImgs.map(u)]),
+    images: gallery(u(PHOTOS.menShoes1), [
+      u(PHOTOS.menShoes2),
+      ...menImgs.map(u),
+    ]),
   }),
   mk({
     id: "m-jacket-01",
@@ -405,7 +559,10 @@ export const PRODUCTS: Product[] = [
     rating: 4.7,
     reviewsCount: 154,
     image: u(PHOTOS.menJacket1),
-    images: gallery(u(PHOTOS.menJacket1), [u(PHOTOS.menJacket2), ...menImgs.map(u)]),
+    images: gallery(u(PHOTOS.menJacket1), [
+      u(PHOTOS.menJacket2),
+      ...menImgs.map(u),
+    ]),
   }),
   mk({
     id: "m-tshirt-01",
@@ -416,6 +573,8 @@ export const PRODUCTS: Product[] = [
     oldPrice: 99,
     discount: 40,
     isNewArrival: true,
+    isTrending: true,
+    trendingTag: "#تيشيرت_رجالي",
     sizes: ["S", "M", "L", "XL", "XXL"],
     colors: [
       { name: "أسود", hex: "#000000" },
@@ -427,8 +586,27 @@ export const PRODUCTS: Product[] = [
     image: u(PHOTOS.menTshirt),
     images: gallery(u(PHOTOS.menTshirt), menImgs.map(u)),
   }),
+  mk({
+    id: "m-sneakers-01",
+    title: "حذاء سنيكرز رجالي عصري",
+    category: "men",
+    subcategory: "أحذية",
+    price: 219,
+    oldPrice: 349,
+    discount: 37,
+    isBigDeal: true,
+    sizes: ["40", "41", "42", "43", "44", "45"],
+    colors: [
+      { name: "أسود", hex: "#000000" },
+      { name: "أبيض", hex: "#ffffff" },
+    ],
+    rating: 4.6,
+    reviewsCount: 211,
+    image: u(PHOTOS.menSneakers),
+    images: gallery(u(PHOTOS.menSneakers), menImgs.map(u)),
+  }),
 
-  // ===== KIDS =====
+  // ===== KIDS (4) =====
   mk({
     id: "k-dress-01",
     title: "فستان بناتي بنقشة زهرية مرن",
@@ -438,6 +616,7 @@ export const PRODUCTS: Product[] = [
     oldPrice: 129,
     discount: 39,
     isFlashSale: true,
+    isBigDeal: true,
     sizes: ["2-3", "4-5", "6-7", "8-9", "10-11"],
     colors: [
       { name: "وردي", hex: "#ee296d" },
@@ -477,26 +656,60 @@ export const PRODUCTS: Product[] = [
     discount: 38,
     isNewArrival: true,
     sizes: ["مقاس واحد"],
-    colors: [
-      { name: "متعدد", hex: "#f1c40f" },
-    ],
+    colors: [{ name: "متعدد", hex: "#f1c40f" }],
     rating: 4.8,
     reviewsCount: 156,
     image: u(PHOTOS.kidsToy),
     images: gallery(u(PHOTOS.kidsToy), kidsImgs.map(u)),
   }),
+  mk({
+    id: "k-toy-02",
+    title: "مكعبات بناء ملونة 100 قطعة",
+    category: "kids",
+    subcategory: "ألعاب",
+    price: 119,
+    oldPrice: 189,
+    discount: 37,
+    isTrending: true,
+    trendingTag: "#ألعاب_تعليمية",
+    sizes: ["100 قطعة"],
+    colors: [{ name: "متعدد", hex: "#27ae60" }],
+    rating: 4.9,
+    reviewsCount: 203,
+    image: u(PHOTOS.kidsBlock),
+    images: gallery(u(PHOTOS.kidsBlock), kidsImgs.map(u)),
+  }),
+  mk({
+    id: "k-shoes-01",
+    title: "حذاء أطفال رياضي مريح بخامة مرنة",
+    category: "kids",
+    subcategory: "أحذية أطفال",
+    price: 89,
+    oldPrice: 139,
+    discount: 36,
+    sizes: ["28", "29", "30", "31", "32", "33"],
+    colors: [
+      { name: "وردي", hex: "#ee296d" },
+      { name: "كحلي", hex: "#1e3a8a" },
+    ],
+    rating: 4.6,
+    reviewsCount: 67,
+    image: u(PHOTOS.kidsShoes),
+    images: gallery(u(PHOTOS.kidsShoes), kidsImgs.map(u)),
+  }),
 
-  // ===== BEAUTY =====
+  // ===== BEAUTY (5) =====
   mk({
     id: "b-lip-01",
     title: "أحمر شفاه مات طويل الثبات",
-    category: "beauty",
+    category: "beauty-health",
     subcategory: "مكياج",
     price: 49,
     oldPrice: 89,
     discount: 45,
     isFlashSale: true,
     isBestSeller: true,
+    isBigDeal: true,
     sizes: ["مقاس واحد"],
     colors: [
       { name: "أحمر", hex: "#c0392b" },
@@ -511,12 +724,14 @@ export const PRODUCTS: Product[] = [
   mk({
     id: "b-cream-01",
     title: "كريم ترطيب وجه بفيتامين C",
-    category: "beauty",
+    category: "beauty-health",
     subcategory: "عناية بالبشرة",
     price: 79,
     oldPrice: 129,
     discount: 39,
     isNewArrival: true,
+    isTrending: true,
+    trendingTag: "#عناية_بالبشرة",
     sizes: ["50ml"],
     colors: [{ name: "متعدد", hex: "#f1c40f" }],
     rating: 4.7,
@@ -527,12 +742,13 @@ export const PRODUCTS: Product[] = [
   mk({
     id: "b-perfume-01",
     title: "عطر نسائي زهري فاخر 100مل",
-    category: "beauty",
+    category: "beauty-health",
     subcategory: "عطور",
     price: 199,
     oldPrice: 329,
     discount: 39,
     isBestSeller: true,
+    isBigDeal: true,
     sizes: ["100ml", "50ml"],
     colors: [{ name: "متعدد", hex: "#ee296d" }],
     rating: 4.9,
@@ -543,7 +759,7 @@ export const PRODUCTS: Product[] = [
   mk({
     id: "b-palette-01",
     title: "باليت ظلال عيون 12 لون",
-    category: "beauty",
+    category: "beauty-health",
     subcategory: "مكياج",
     price: 69,
     oldPrice: 119,
@@ -556,18 +772,52 @@ export const PRODUCTS: Product[] = [
     image: u(PHOTOS.beautyPalette),
     images: gallery(u(PHOTOS.beautyPalette), beautyImgs.map(u)),
   }),
+  mk({
+    id: "b-nail-01",
+    title: "طقم طلاء أظافر جل 6 ألوان",
+    category: "beauty-health",
+    subcategory: "العناية بالأظافر",
+    price: 59,
+    oldPrice: 99,
+    discount: 40,
+    isNewArrival: true,
+    sizes: ["طقم 6 قطع"],
+    colors: [{ name: "متعدد", hex: "#ee296d" }],
+    rating: 4.4,
+    reviewsCount: 92,
+    image: u(PHOTOS.beautyNail),
+    images: gallery(u(PHOTOS.beautyNail), beautyImgs.map(u)),
+  }),
+  mk({
+    id: "b-set-01",
+    title: "طقم هدايا العناية بالبشرة الفاخر",
+    category: "beauty-health",
+    subcategory: "عناية بالبشرة",
+    price: 149,
+    oldPrice: 249,
+    discount: 40,
+    isTrending: true,
+    trendingTag: "#طقم_هدايا",
+    sizes: ["طقم 5 قطع"],
+    colors: [{ name: "متعدد", hex: "#d4af37" }],
+    rating: 4.8,
+    reviewsCount: 156,
+    image: u(PHOTOS.beautySet),
+    images: gallery(u(PHOTOS.beautySet), beautyImgs.map(u)),
+  }),
 
-  // ===== ACCESSORIES =====
+  // ===== ACCESSORIES / JEWELRY (6) =====
   mk({
     id: "a-watch-01",
-    title: "ساعة يد رجالية كلاسيكية جلد",
-    category: "accessories",
+    title: "ساعة يد رجالية كلاسيكية بسوار جلد",
+    category: "jewelry-accessories",
     subcategory: "ساعات",
     price: 199,
     oldPrice: 349,
     discount: 43,
     isBestSeller: true,
     isNewArrival: true,
+    isBigDeal: true,
     sizes: ["مقاس واحد"],
     colors: [
       { name: "أسود", hex: "#000000" },
@@ -576,13 +826,16 @@ export const PRODUCTS: Product[] = [
     rating: 4.7,
     reviewsCount: 198,
     image: u(PHOTOS.accWatch1),
-    images: gallery(u(PHOTOS.accWatch1), [u(PHOTOS.accWatch2), ...accImgs.map(u)]),
+    images: gallery(u(PHOTOS.accWatch1), [
+      u(PHOTOS.accWatch2),
+      ...accImgs.map(u),
+    ]),
   }),
   mk({
     id: "a-glasses-01",
-    title: "نظارة شمسية بولارايزد عصرية",
-    category: "accessories",
-    subcategory: "نظارات",
+    title: "نظارة شمسية بولارايزد عصرية بحماية UV400",
+    category: "jewelry-accessories",
+    subcategory: "نظارات شمسية",
     price: 89,
     oldPrice: 159,
     discount: 44,
@@ -595,17 +848,22 @@ export const PRODUCTS: Product[] = [
     rating: 4.5,
     reviewsCount: 134,
     image: u(PHOTOS.accGlasses1),
-    images: gallery(u(PHOTOS.accGlasses1), [u(PHOTOS.accGlasses2), ...accImgs.map(u)]),
+    images: gallery(u(PHOTOS.accGlasses1), [
+      u(PHOTOS.accGlasses2),
+      ...accImgs.map(u),
+    ]),
   }),
   mk({
     id: "a-necklace-01",
     title: "قلادة ذهبية أنيقة بحجر زركون",
-    category: "accessories",
-    subcategory: "مجوخات",
+    category: "jewelry-accessories",
+    subcategory: "قلائد",
     price: 119,
     oldPrice: 199,
     discount: 40,
     isBestSeller: true,
+    isTrending: true,
+    trendingTag: "#طقم_مجوهرات_ذهبي",
     sizes: ["مقاس واحد"],
     colors: [
       { name: "ذهبي", hex: "#d4af37" },
@@ -614,14 +872,76 @@ export const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 245,
     image: u(PHOTOS.accNecklace1),
-    images: gallery(u(PHOTOS.accNecklace1), [u(PHOTOS.accNecklace2), u(PHOTOS.accEarrings), ...accImgs.map(u)]),
+    images: gallery(u(PHOTOS.accNecklace1), [
+      u(PHOTOS.accNecklace2),
+      u(PHOTOS.accEarrings),
+      ...accImgs.map(u),
+    ]),
+  }),
+  mk({
+    id: "a-earrings-01",
+    title: "أقراط ذهبية دائرية أنيقة",
+    category: "jewelry-accessories",
+    subcategory: "أقراط",
+    price: 69,
+    oldPrice: 119,
+    discount: 42,
+    isNewArrival: true,
+    sizes: ["مقاس واحد"],
+    colors: [
+      { name: "ذهبي", hex: "#d4af37" },
+      { name: "فضي", hex: "#bdc3c7" },
+    ],
+    rating: 4.6,
+    reviewsCount: 87,
+    image: u(PHOTOS.accEarrings),
+    images: gallery(u(PHOTOS.accEarrings), accImgs.map(u)),
+  }),
+  mk({
+    id: "a-watch-02",
+    title: "ساعة يد نسائية أنيقة بإطار ذهبي",
+    category: "jewelry-accessories",
+    subcategory: "ساعات",
+    price: 159,
+    oldPrice: 259,
+    discount: 39,
+    isTrending: true,
+    trendingTag: "#ساعة_نسائية",
+    sizes: ["مقاس واحد"],
+    colors: [
+      { name: "ذهبي", hex: "#d4af37" },
+      { name: "وردي", hex: "#ee296d" },
+    ],
+    rating: 4.7,
+    reviewsCount: 142,
+    image: u(PHOTOS.accWatch2),
+    images: gallery(u(PHOTOS.accWatch2), accImgs.map(u)),
+  }),
+  mk({
+    id: "a-necklace-02",
+    title: "طقم مجوهرات 3 قطع (قلادة + أقراط + سوار)",
+    category: "jewelry-accessories",
+    subcategory: "قلائد",
+    price: 149,
+    oldPrice: 249,
+    discount: 40,
+    isBigDeal: true,
+    sizes: ["طقم 3 قطع"],
+    colors: [
+      { name: "ذهبي", hex: "#d4af37" },
+      { name: "فضي", hex: "#bdc3c7" },
+    ],
+    rating: 4.8,
+    reviewsCount: 178,
+    image: u(PHOTOS.accNecklace2),
+    images: gallery(u(PHOTOS.accNecklace2), accImgs.map(u)),
   }),
 
-  // ===== HOME =====
+  // ===== HOME & KITCHEN (4) =====
   mk({
     id: "h-decor-01",
     title: "مزهرية ديكور سيراميك عصري",
-    category: "home",
+    category: "home-living",
     subcategory: "ديكور",
     price: 99,
     oldPrice: 169,
@@ -641,7 +961,7 @@ export const PRODUCTS: Product[] = [
   mk({
     id: "h-kitchen-01",
     title: "طقم 6 أكواب قهوة سيراميك",
-    category: "home",
+    category: "home-living",
     subcategory: "مطبخ",
     price: 79,
     oldPrice: 129,
@@ -660,7 +980,7 @@ export const PRODUCTS: Product[] = [
   mk({
     id: "h-candle-01",
     title: "شمع معطر فاخر بعودي 200جم",
-    category: "home",
+    category: "home-living",
     subcategory: "ديكور",
     price: 69,
     oldPrice: 109,
@@ -672,6 +992,419 @@ export const PRODUCTS: Product[] = [
     reviewsCount: 76,
     image: u(PHOTOS.homeCandle),
     images: gallery(u(PHOTOS.homeCandle), homeImgs.map(u)),
+  }),
+  mk({
+    id: "h-lamp-01",
+    title: "مصباح طاولة LED بتصميم عصري",
+    category: "home-living",
+    subcategory: "إضاءة",
+    price: 149,
+    oldPrice: 229,
+    discount: 35,
+    isBigDeal: true,
+    sizes: ["مقاس واحد"],
+    colors: [
+      { name: "أبيض", hex: "#ffffff" },
+      { name: "أسود", hex: "#000000" },
+    ],
+    rating: 4.6,
+    reviewsCount: 98,
+    image: u(PHOTOS.homeLamp),
+    images: gallery(u(PHOTOS.homeLamp), homeImgs.map(u)),
+  }),
+  mk({
+    id: "h-bedding-01",
+    title: "طقم أغطية سرير قطني 4 قطع",
+    category: "home-textiles",
+    subcategory: "أغطية سرير",
+    price: 199,
+    oldPrice: 329,
+    discount: 39,
+    isNewArrival: true,
+    sizes: ["King", "Queen"],
+    colors: [
+      { name: "بيج", hex: "#e8d8c4" },
+      { name: "رمادي", hex: "#7f8c8d" },
+      { name: "كحلي", hex: "#1e3a8a" },
+    ],
+    rating: 4.7,
+    reviewsCount: 156,
+    image: u(PHOTOS.homeBedding),
+    images: gallery(u(PHOTOS.homeBedding), homeImgs.map(u)),
+  }),
+
+  // ===== ELECTRONICS (4) =====
+  mk({
+    id: "e-phone-01",
+    title: "هاتف ذكي بشاشة 6.7 بوصة 256GB",
+    category: "electronics",
+    subcategory: "هواتف",
+    price: 1899,
+    oldPrice: 2499,
+    discount: 24,
+    isBrand: true,
+    brand: "Apple",
+    isBigDeal: true,
+    sizes: ["256GB", "512GB"],
+    colors: [
+      { name: "أسود", hex: "#000000" },
+      { name: "فضي", hex: "#bdc3c7" },
+      { name: "ذهبي", hex: "#d4af37" },
+    ],
+    rating: 4.9,
+    reviewsCount: 521,
+    image: u(PHOTOS.elecPhone),
+    images: gallery(u(PHOTOS.elecPhone), elecImgs.map(u)),
+  }),
+  mk({
+    id: "e-tablet-01",
+    title: "جهاز لوحي 11 بوصة بمعالج M2 128GB",
+    category: "electronics",
+    subcategory: "أجهزة لوحية",
+    price: 2499,
+    oldPrice: 3199,
+    discount: 22,
+    isBrand: true,
+    brand: "Apple",
+    isFlashSale: true,
+    sizes: ["128GB", "256GB"],
+    colors: [
+      { name: "رمادي", hex: "#7f8c8d" },
+      { name: "فضي", hex: "#bdc3c7" },
+    ],
+    rating: 4.9,
+    reviewsCount: 387,
+    image: u(PHOTOS.elecTablet),
+    images: gallery(u(PHOTOS.elecTablet), elecImgs.map(u)),
+  }),
+  mk({
+    id: "e-earbuds-01",
+    title: "سماعات لاسلكية TRUE Wireless مع إلغاء الضوضاء",
+    category: "electronics",
+    subcategory: "سماعات",
+    price: 449,
+    oldPrice: 699,
+    discount: 36,
+    isBrand: true,
+    brand: "Sony",
+    isTrending: true,
+    trendingTag: "#سماعات_لاسلكية",
+    sizes: ["مقاس واحد"],
+    colors: [
+      { name: "أبيض", hex: "#ffffff" },
+      { name: "أسود", hex: "#000000" },
+    ],
+    rating: 4.8,
+    reviewsCount: 612,
+    image: u(PHOTOS.elecEarbuds),
+    images: gallery(u(PHOTOS.elecEarbuds), elecImgs.map(u)),
+  }),
+  mk({
+    id: "e-camera-01",
+    title: "كاميرا رقمية مدمجة 4K للتصوير",
+    category: "electronics",
+    subcategory: "كاميرات",
+    price: 1299,
+    oldPrice: 1899,
+    discount: 32,
+    isBrand: true,
+    brand: "Canon",
+    isBestSeller: true,
+    sizes: ["مقاس واحد"],
+    colors: [
+      { name: "أسود", hex: "#000000" },
+      { name: "فضي", hex: "#bdc3c7" },
+    ],
+    rating: 4.7,
+    reviewsCount: 234,
+    image: u(PHOTOS.elecCamera),
+    images: gallery(u(PHOTOS.elecCamera), elecImgs.map(u)),
+  }),
+  mk({
+    id: "e-speaker-01",
+    title: "مكبر صوت بلوتوث محمول مقاوم للماء",
+    category: "electronics",
+    subcategory: "مكبرات صوت",
+    price: 299,
+    oldPrice: 449,
+    discount: 33,
+    isBrand: true,
+    brand: "JBL",
+    isFlashSale: true,
+    sizes: ["مقاس واحد"],
+    colors: [
+      { name: "أسود", hex: "#000000" },
+      { name: "أزرق", hex: "#2980b9" },
+      { name: "أحمر", hex: "#c0392b" },
+    ],
+    rating: 4.7,
+    reviewsCount: 412,
+    image: u(PHOTOS.elecSpeaker),
+    images: gallery(u(PHOTOS.elecSpeaker), elecImgs.map(u)),
+  }),
+  mk({
+    id: "e-headphones-01",
+    title: "سماعة رأس لاسلكية بإلغاء الضوضاء",
+    category: "electronics",
+    subcategory: "سماعات",
+    price: 599,
+    oldPrice: 899,
+    discount: 33,
+    isBrand: true,
+    brand: "Sony",
+    isBigDeal: true,
+    sizes: ["مقاس واحد"],
+    colors: [
+      { name: "أسود", hex: "#000000" },
+      { name: "أبيض", hex: "#ffffff" },
+    ],
+    rating: 4.8,
+    reviewsCount: 327,
+    image: u(PHOTOS.elecHeadphones),
+    images: gallery(u(PHOTOS.elecHeadphones), elecImgs.map(u)),
+  }),
+
+  // ===== BRAND ZONE — Gaming & Tech (4) =====
+  mk({
+    id: "g-ps5-controller-01",
+    title: "يد تحكم DualSense لـ PlayStation 5",
+    category: "electronics",
+    subcategory: "ألعاب فيديو",
+    price: 349,
+    oldPrice: 449,
+    discount: 22,
+    isBrand: true,
+    brand: "Sony",
+    isBigDeal: true,
+    sizes: ["مقاس واحد"],
+    colors: [
+      { name: "أبيض", hex: "#ffffff" },
+      { name: "أسود", hex: "#000000" },
+      { name: "وردي", hex: "#ee296d" },
+    ],
+    rating: 4.9,
+    reviewsCount: 894,
+    image: u(PHOTOS.elecPsController),
+    images: gallery(u(PHOTOS.elecPsController), elecImgs.map(u)),
+  }),
+  mk({
+    id: "g-ps5-console-01",
+    title: "جهاز PlayStation 5 Slim Edition",
+    category: "electronics",
+    subcategory: "أجهزة ألعاب",
+    price: 2199,
+    oldPrice: 2799,
+    discount: 21,
+    isBrand: true,
+    brand: "Sony",
+    isBestSeller: true,
+    sizes: ["1TB"],
+    colors: [
+      { name: "أبيض", hex: "#ffffff" },
+      { name: "أسود", hex: "#000000" },
+    ],
+    rating: 4.9,
+    reviewsCount: 1287,
+    image: u(PHOTOS.elecPS5),
+    images: gallery(u(PHOTOS.elecPS5), elecImgs.map(u)),
+  }),
+  mk({
+    id: "g-smartwatch-01",
+    title: "ساعة ذكية Series 9 بشاشة AMOLED",
+    category: "electronics",
+    subcategory: "ساعات ذكية",
+    price: 1499,
+    oldPrice: 1899,
+    discount: 21,
+    isBrand: true,
+    brand: "Apple",
+    isFlashSale: true,
+    sizes: ["41mm", "45mm"],
+    colors: [
+      { name: "أسود", hex: "#000000" },
+      { name: "وردي", hex: "#ee296d" },
+      { name: "فضي", hex: "#bdc3c7" },
+    ],
+    rating: 4.9,
+    reviewsCount: 743,
+    image: u(PHOTOS.elecWatch),
+    images: gallery(u(PHOTOS.elecWatch), elecImgs.map(u)),
+  }),
+  mk({
+    id: "g-macbook-01",
+    title: "لابتوب MacBook Pro M3 14 بوصة 512GB",
+    category: "electronics",
+    subcategory: "لابتوبات",
+    price: 7499,
+    oldPrice: 8999,
+    discount: 17,
+    isBrand: true,
+    brand: "Apple",
+    isBigDeal: true,
+    sizes: ["14 بوصة", "16 بوصة"],
+    colors: [
+      { name: "رمادي", hex: "#7f8c8d" },
+      { name: "أسود", hex: "#000000" },
+    ],
+    rating: 5.0,
+    reviewsCount: 412,
+    image: u(PHOTOS.elecMacbook),
+    images: gallery(u(PHOTOS.elecMacbook), elecImgs.map(u)),
+  }),
+
+  // ===== SPORTS (3) =====
+  mk({
+    id: "s-yoga-01",
+    title: "طقم يوغا نسائي قطني مرن",
+    category: "sports-outdoor",
+    subcategory: "ملابس رياضية",
+    price: 129,
+    oldPrice: 199,
+    discount: 35,
+    isTrending: true,
+    trendingTag: "#طقم_يوغا",
+    sizes: ["S", "M", "L", "XL"],
+    colors: [
+      { name: "وردي", hex: "#ee296d" },
+      { name: "أسود", hex: "#000000" },
+      { name: "بنفسجي", hex: "#8e44ad" },
+    ],
+    rating: 4.7,
+    reviewsCount: 168,
+    image: u(PHOTOS.sportYoga),
+    images: gallery(u(PHOTOS.sportYoga), sportImgs.map(u)),
+  }),
+  mk({
+    id: "s-run-01",
+    title: "حذاء جري رياضي خفيف بوسادة هوائية",
+    category: "sports-outdoor",
+    subcategory: "أحذية رياضية",
+    price: 249,
+    oldPrice: 379,
+    discount: 34,
+    isFlashSale: true,
+    sizes: ["40", "41", "42", "43", "44", "45"],
+    colors: [
+      { name: "أسود", hex: "#000000" },
+      { name: "أبيض", hex: "#ffffff" },
+      { name: "أزرق", hex: "#2980b9" },
+    ],
+    rating: 4.8,
+    reviewsCount: 245,
+    image: u(PHOTOS.sportRun),
+    images: gallery(u(PHOTOS.sportRun), sportImgs.map(u)),
+  }),
+  mk({
+    id: "s-dumbbell-01",
+    title: "طقم أثقال يدوية قابل للتعديل 20كجم",
+    category: "sports-outdoor",
+    subcategory: "معدات رياضية",
+    price: 349,
+    oldPrice: 499,
+    discount: 30,
+    isBestSeller: true,
+    sizes: ["طقم 20كجم"],
+    colors: [
+      { name: "أسود", hex: "#000000" },
+      { name: "رمادي", hex: "#7f8c8d" },
+    ],
+    rating: 4.7,
+    reviewsCount: 134,
+    image: u(PHOTOS.sportDumbbell),
+    images: gallery(u(PHOTOS.sportDumbbell), sportImgs.map(u)),
+  }),
+
+  // ===== BAGS & LUGGAGE (4) =====
+  mk({
+    id: "bl-backpack-01",
+    title: "حقيبة ظهر عصرية مضادة للسرقة للابتوب",
+    category: "bags-luggage",
+    subcategory: "حقائب ظهر",
+    price: 159,
+    oldPrice: 249,
+    discount: 36,
+    isBestSeller: true,
+    sizes: ["مقاس واحد"],
+    colors: [
+      { name: "أسود", hex: "#000000" },
+      { name: "رمادي", hex: "#7f8c8d" },
+      { name: "كحلي", hex: "#1e3a8a" },
+    ],
+    rating: 4.7,
+    reviewsCount: 312,
+    image: u(PHOTOS.bagBackpack),
+    images: gallery(u(PHOTOS.bagBackpack), [
+      u(PHOTOS.bagWallet),
+      u(PHOTOS.bagSuitcase),
+    ]),
+  }),
+  mk({
+    id: "bl-clutch-01",
+    title: "كلاتش سهرة فاخر بحجر كريستال",
+    category: "bags-luggage",
+    subcategory: "كلاتش",
+    price: 99,
+    oldPrice: 159,
+    discount: 38,
+    isTrending: true,
+    trendingTag: "#كلاتش_سهرة",
+    sizes: ["مقاس واحد"],
+    colors: [
+      { name: "ذهبي", hex: "#d4af37" },
+      { name: "أسود", hex: "#000000" },
+      { name: "وردي", hex: "#ee296d" },
+    ],
+    rating: 4.6,
+    reviewsCount: 87,
+    image: u(PHOTOS.bagClutch),
+    images: gallery(u(PHOTOS.bagClutch), [
+      u(PHOTOS.bagWallet),
+      u(PHOTOS.bagSuitcase),
+    ]),
+  }),
+  mk({
+    id: "bl-suitcase-01",
+    title: "حقيبة سفر بعجلات 20 بوصة خفيفة",
+    category: "bags-luggage",
+    subcategory: "حقائب سفر",
+    price: 349,
+    oldPrice: 499,
+    discount: 30,
+    isBigDeal: true,
+    sizes: ["20 بوصة", "24 بوصة", "28 بوصة"],
+    colors: [
+      { name: "أسود", hex: "#000000" },
+      { name: "وردي", hex: "#ee296d" },
+      { name: "كحلي", hex: "#1e3a8a" },
+    ],
+    rating: 4.8,
+    reviewsCount: 234,
+    image: u(PHOTOS.bagSuitcase),
+    images: gallery(u(PHOTOS.bagSuitcase), [
+      u(PHOTOS.bagBackpack),
+      u(PHOTOS.bagWallet),
+    ]),
+  }),
+  mk({
+    id: "bl-wallet-01",
+    title: "محفظة جلدية رجالية فاخرة متعددة الجيوب",
+    category: "bags-luggage",
+    subcategory: "محافظ",
+    price: 79,
+    oldPrice: 129,
+    discount: 39,
+    sizes: ["مقاس واحد"],
+    colors: [
+      { name: "بني", hex: "#8b5e3c" },
+      { name: "أسود", hex: "#000000" },
+    ],
+    rating: 4.7,
+    reviewsCount: 156,
+    image: u(PHOTOS.bagWallet),
+    images: gallery(u(PHOTOS.bagWallet), [
+      u(PHOTOS.bagBackpack),
+      u(PHOTOS.bagSuitcase),
+    ]),
   }),
 ];
 
@@ -685,11 +1418,16 @@ export const getProductsByCategory = (category: string) =>
 export const getFlashSaleProducts = () =>
   PRODUCTS.filter((p) => p.isFlashSale);
 
-export const getNewArrivals = () =>
-  PRODUCTS.filter((p) => p.isNewArrival);
+export const getNewArrivals = () => PRODUCTS.filter((p) => p.isNewArrival);
 
-export const getBestSellers = () =>
-  PRODUCTS.filter((p) => p.isBestSeller);
+export const getBestSellers = () => PRODUCTS.filter((p) => p.isBestSeller);
+
+export const getBigDeals = () => PRODUCTS.filter((p) => p.isBigDeal);
+
+export const getBrandProducts = () => PRODUCTS.filter((p) => p.isBrand);
+
+export const getTrendingProducts = () =>
+  PRODUCTS.filter((p) => p.isTrending);
 
 export const getRelatedProducts = (product: Product, limit = 8) =>
   PRODUCTS.filter(
